@@ -38,9 +38,12 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
  * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this Op Mode to the Driver Station OpMode list
  */
+
 @TeleOp(name = "Sensor: Color", group = "Sensor")
 /**@Disabled*/
 public class SensorColor extends LinearOpMode {
+
+
 
     /** The colorSensor field will contain a reference to our color sensor hardware object */
     NormalizedColorSensor colorSensor;
@@ -157,11 +160,12 @@ public class SensorColor extends LinearOpMode {
                 //sleep(2000);
                 // If the button is (now) down, then toggle the light
                 if (xButtonCurrentlyPressed) {
-                    telemetry.addData("","if (xButtonCurrentlyPressed)");
+                    telemetry.addData("button is pressed","if (xButtonCurrentlyPressed)");
                     if (colorSensor instanceof SwitchableLight) {
                         telemetry.addData("Light", "Turn on/off");
                         telemetry.update();
                         SwitchableLight light = (SwitchableLight)colorSensor;
+                        sleep(1000);
                         light.enableLight(!light.isLightOn());
                         sleep(2000);
                     }
