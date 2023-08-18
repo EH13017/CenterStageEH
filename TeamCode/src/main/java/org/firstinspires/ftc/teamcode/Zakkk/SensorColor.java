@@ -61,6 +61,11 @@ public class SensorColor extends LinearOpMode {
     private double modifyBySine = Math.sin(Math.PI/4);
     private final double SLOW_DRIVE = 0.4;
     private double percentToSlowDrive = SLOW_DRIVE;
+    double oneLeftStickYPower = -gamepad1.left_stick_y;
+    double oneLeftStickXPower = gamepad1.left_stick_x;
+    double oneRightStickXPower = gamepad1.right_stick_x;
+    boolean oneButtonA = gamepad1.a;
+    boolean oneButtonB = gamepad1.b;
 
 
     /** The relativeLayout field is used to aid in providing interesting visual feedback
@@ -78,12 +83,14 @@ public class SensorColor extends LinearOpMode {
      * block around the main, core logic, and an easy way to make that all clear was to separate
      * the former from the latter in separate methods.
      */
-    @Override public void runOpMode() {
+    @Override
+    public void runOpMode() {
 
         // Get a reference to the RelativeLayout so we can later change the background
         // color of the Robot Controller app to match the hue detected by the RGB sensor.
         int relativeLayoutId = hardwareMap.appContext.getResources().getIdentifier("RelativeLayout", "id", hardwareMap.appContext.getPackageName());
         relativeLayout = ((Activity) hardwareMap.appContext).findViewById(relativeLayoutId);
+
 
 
         WheelFrontLeft = hardwareMap.dcMotor.get("WheelFL");
@@ -110,6 +117,16 @@ public class SensorColor extends LinearOpMode {
         WheelFrontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         WheelBackLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         WheelBackRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        /*
+         * Gamepad Controls
+         */
+
+        // Gamepad 1
+         oneLeftStickYPower = -gamepad1.left_stick_y;
+         oneLeftStickXPower = gamepad1.left_stick_x;
+         oneRightStickXPower = gamepad1.right_stick_x;
+         oneButtonA = gamepad1.a;
+         oneButtonB = gamepad1.b;
 
         try {
             runSample(); // actually execute the sample
@@ -153,28 +170,31 @@ public class SensorColor extends LinearOpMode {
         // the values you get from ColorSensor are dependent on the specific sensor you're using.
         colorSensor = hardwareMap.get(NormalizedColorSensor.class, "sensor_color");
 
-        // If possible, turn the light on in the beginning (it might already be on anyway,
+        /*// If possible, turn the light on in the beginning (it might already be on anyway,
         // we just make sure it is if we can).
         if (colorSensor instanceof SwitchableLight) {
             ((SwitchableLight)colorSensor).enableLight(true);
-        }
+        }*/
+
+        telemetry.addData("","Waiting...");
+        telemetry.update();
 
         // Wait for the start button to be pressed.
         waitForStart();
 
         // Loop until we are asked to stop
         while (opModeIsActive()) {
-            // Explain basic gain information via telemetry
-            telemetry.addLine("Hold the A button on gamepad 1 to increase gain, or B to decrease it.\n");
-            telemetry.addLine("Higher gain values mean that the sensor will report larger numbers for Red, Green, and Blue, and Value\n");
+            oneLeftStickYPower = -gamepad1.left_stick_y;
+            oneLeftStickXPower = gamepad1.left_stick_x;
+            oneRightStickXPower = gamepad1.right_stick_x;
 
-            // Update the gain value if either of the A or B gamepad buttons is being held
-            if (gamepad1.a) {
-                // Only increase the gain by a small amount, since this loop will occur multiple times per second.
-                gain += 0.005;
-            } else if (gamepad1.b && gain > 1) { // A gain of less than 1 will make the values smaller, which is not helpful.
-                gain -= 0.005;
-            }
+            telemetry.addData("oneLeftStickYPower",oneLeftStickYPower);
+            telemetry.addData("oneLeftStickXPower",oneLeftStickXPower);
+            telemetry.addData("oneRightStickXPower",oneRightStickXPower);
+
+            ProMotorControl(oneLeftStickYPower, oneLeftStickXPower, oneRightStickXPower);
+            // Explain basic gain information via telemetry
+
 
             // Show the gain value via telemetry
             telemetry.addData("Gain", gain);
@@ -184,65 +204,24 @@ public class SensorColor extends LinearOpMode {
             colorSensor.setGain(gain);
 
 
-           /* // Check the status of the X button on the gamepad
-            xButtonCurrentlyPressed = gamepad1.y;
-
-            if (xButtonCurrentlyPressed) {
-                telemetry.addData("Y Button", "Is Pressed");
-            } else {
-                telemetry.addData("Y Button", "NOT Pressed");
-            }
-
-            sleep(10);
-            // If the button state is different than what it was, then act
-            if (xButtonCurrentlyPressed != xButtonPreviouslyPressed) {
-                telemetry.addData("Compare Y","Different");
-                //telemetry.update();
-                //sleep(2000);
-                // If the button is (now) down, then toggle the light
-                if (xButtonCurrentlyPressed) {
-                    telemetry.addData("button is pressed","if (xButtonCurrentlyPressed)");
-                    if (colorSensor instanceof SwitchableLight) {
-                        telemetry.addData("Light", "Turn on/off");
-                        telemetry.update();
-                        SwitchableLight light = (SwitchableLight)colorSensor;
-                        sleep(1000);
-                        light.enableLight(!light.isLightOn());
-                        sleep(2000);
-                    }
-                }
-            } else {
-                telemetry.addData("Compare Y", "The Same");
-            }*/
-            xButtonPreviouslyPressed = xButtonCurrentlyPressed;
-
             // Get the normalized colors from the sensor
-            NormalizedRGBA colors = colorSensor.getNormalizedColors();
-
             /* Use telemetry to display feedback on the driver station. We show the red, green, and blue
              * normalized values from the sensor (in the range of 0 to 1), as well as the equivalent
              * HSV (hue, saturation and value) values. See http://web.archive.org/web/20190311170843/https://infohost.nmt.edu/tcc/help/pubs/colortheory/web/hsv.html
              * for an explanation of HSV color. */
 
             // Update the hsvValues array by passing it to Color.colorToHSV()
-            Color.colorToHSV(colors.toColor(), hsvValues);
-
-            telemetry.addLine()
-                    .addData("Red", "%.3f", colors.red)
-                    .addData("Green", "%.3f", colors.green)
-                    .addData("Blue", "%.3f", colors.blue);
-            telemetry.addLine()
-                    .addData("Hue", "%.3f", hsvValues[0])
-                    .addData("Saturation", "%.3f", hsvValues[1])
-                    .addData("Value", "%.3f", hsvValues[2]);
-            telemetry.addData("Alpha", "%.3f", colors.alpha);
 
             /* If this color sensor also has a distance sensor, display the measured distance.
              * Note that the reported distance is only useful at very close range, and is impacted by
              * ambient light and surface reflectivity. */
             if (colorSensor instanceof DistanceSensor) {
                 telemetry.addData("Distance (cm)", "%.3f", ((DistanceSensor) colorSensor).getDistance(DistanceUnit.CM));
+
             }
+            /*if (colorSensor instanceof DistanceSensor) {
+                DistanceUnit == ;
+            }*/
 
             telemetry.update();
 
@@ -284,4 +263,5 @@ public class SensorColor extends LinearOpMode {
         telemetry.addData("Wheel Back Right",v4* percentToSlowDrive);
     }
 }
+
 
