@@ -61,11 +61,11 @@ public class SensorColor extends LinearOpMode {
     private double modifyBySine = Math.sin(Math.PI/4);
     private final double SLOW_DRIVE = 0.4;
     private double percentToSlowDrive = SLOW_DRIVE;
-    double oneLeftStickYPower = -gamepad1.left_stick_y;
-    double oneLeftStickXPower = gamepad1.left_stick_x;
-    double oneRightStickXPower = gamepad1.right_stick_x;
-    boolean oneButtonA = gamepad1.a;
-    boolean oneButtonB = gamepad1.b;
+    double oneLeftStickYPower;
+    double oneLeftStickXPower;
+    double oneRightStickXPower;
+    boolean oneButtonA;
+    boolean oneButtonB;
 
 
     /** The relativeLayout field is used to aid in providing interesting visual feedback
