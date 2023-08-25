@@ -60,8 +60,12 @@ public class SensorMRRangeSensor extends LinearOpMode {
     private DcMotor WheelBackLeft;
     private DcMotor WheelBackRight;
     private double modifyBySine = Math.sin(Math.PI/4);
-    private final double SLOW_DRIVE = 0.4;
+    private final double SLOW_DRIVE = 0.1;
     private double percentToSlowDrive = SLOW_DRIVE;
+    private final double FAST_DRIVE = .5; //0.9;
+    private boolean slowModeDriveOn = true;
+    private boolean buttonSlowDriveIsPressed = false;
+
     @Override
     public void runOpMode() {
 
@@ -115,7 +119,7 @@ public class SensorMRRangeSensor extends LinearOpMode {
             oneLeftStickYPower = -gamepad1.left_stick_y;
             oneLeftStickXPower = gamepad1.left_stick_x;
             oneRightStickXPower = gamepad1.right_stick_x;
-
+            setSLOW_DRIVE(rangeSensor.rawUltrasonic());
             ProMotorControl(oneLeftStickYPower, oneLeftStickXPower, oneRightStickXPower);
             telemetry.addData("raw ultrasonic", rangeSensor.rawUltrasonic());
             telemetry.addData("raw optical", rangeSensor.rawOptical());
@@ -146,9 +150,19 @@ public class SensorMRRangeSensor extends LinearOpMode {
         WheelBackLeft.setPower(v3* percentToSlowDrive);
         WheelBackRight.setPower(v4* percentToSlowDrive);
 
-        telemetry.addData("Wheel Front Left",v1* percentToSlowDrive);
-        telemetry.addData("Wheel Front Right",v2* percentToSlowDrive);
-        telemetry.addData("Wheel Back Left",v3* percentToSlowDrive);
-        telemetry.addData("Wheel Back Right",v4* percentToSlowDrive);
+        telemetry.addData("Wheel Front Left",v1* (percentToSlowDrive * -1) + 20);
+        telemetry.addData("Wheel Front Right",v2* (percentToSlowDrive * -1) + 20);
+        telemetry.addData("Wheel Back Left",v3* (percentToSlowDrive * -1) + 20);
+        telemetry.addData("Wheel Back Right",v4* (percentToSlowDrive * -1) + 20);
+    }
+
+    private void setSLOW_DRIVE (int rawUltrasonic) {
+        if (rawUltrasonic<=20) {
+            percentToSlowDrive = SLOW_DRIVE;
+            telemetry.addData("Drive Mode","Slow: " + percentToSlowDrive + "% Power");
+        } else {
+            percentToSlowDrive = FAST_DRIVE;
+            telemetry.addData("Drive Mode","Fast: " + percentToSlowDrive + "% Power");
+        }
     }
 }
