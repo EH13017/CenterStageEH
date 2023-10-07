@@ -30,6 +30,7 @@
 package org.firstinspires.ftc.teamcode.Adam;
 
 import com.qualcomm.hardware.R;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.hardware.ControlSystem;
 import com.qualcomm.robotcore.hardware.HardwareDevice;
 import com.qualcomm.robotcore.hardware.ServoControllerEx;
@@ -54,6 +55,7 @@ import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
 @ServoType(flavor = ServoFlavor.CUSTOM, usPulseLower = 500, usPulseUpper = 2500)
 @DeviceProperties(xmlTag = "RevBlinkinLedDriver", name = "@string/rev_blinkin_name", description = "@string/rev_blinkin_description",
         builtIn = true, compatibleControlSystems = ControlSystem.REV_HUB)
+@Disabled
 public class RevBlinkinLedDriver implements HardwareDevice {
 
     public enum BlinkinPattern {
