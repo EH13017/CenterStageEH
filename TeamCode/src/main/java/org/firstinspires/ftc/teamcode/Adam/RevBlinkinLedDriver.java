@@ -231,7 +231,7 @@ public class RevBlinkinLedDriver implements HardwareDevice {
         return pwm;
     }
 
-    public void distanceColor(double pattern)
+    public void setRGB(double pattern)
     {
         //double pwm = BASE_SERVO_POSITION + ((PATTERN_OFFSET * pattern.ordinal()) * PULSE_WIDTH_INCREMENTOR);
         //RobotLog.vv(TAG, "Pattern: %s, %d, %f", pattern.toString(), pattern.ordinal(), pwm);
