@@ -31,7 +31,7 @@ import java.util.Arrays;
 import java.util.List;
 
 
-@TeleOp(name = "Concept: OpenCV001", group = "Coach")
+@TeleOp(name = "Coach: OpenCV001", group = "Coach")
 //@Disabled
 public class OpenCV001 extends LinearOpMode
 {

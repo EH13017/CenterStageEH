@@ -13,7 +13,7 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 import java.util.List;
 
 @TeleOp(name = "Concept: AprilTag", group = "Coach")
-//@Disabled
+@Disabled
 public class AprilTags_001  extends LinearOpMode {
 
     private static final boolean USE_WEBCAM = true;  // true for webcam, false for phone camera
