@@ -1,13 +1,20 @@
 package org.firstinspires.ftc.teamcode.Coach;
 
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.IMU;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import org.firstinspires.ftc.teamcode.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.util.Encoder;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 @TeleOp(name = "TeleOp Teleop001", group = "Coach")
 //@Disabled
@@ -37,9 +44,11 @@ public class Teleop001 extends OpMode {
     private boolean buttonSineIsPressed = false;
     private double modifyBySine = Math.sin(Math.PI/4);
 
+    private Orientation lastAngles = new Orientation();
 //   // REV Blinkin
 //   private RevBlinkinLedDriver LED;
 
+    private IMU imu;
 
     @Override
     public void init() {
@@ -73,6 +82,11 @@ public class Teleop001 extends OpMode {
         WheelBackLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         WheelBackRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
+
+        imu = hardwareMap.get(IMU.class, "imu");
+        IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
+                DriveConstants.LOGO_FACING_DIR, DriveConstants.USB_FACING_DIR));
+        imu.initialize(parameters);
 
         leftEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "WheelFL"));
         rightEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "WheelBR"));
@@ -127,9 +141,13 @@ public class Teleop001 extends OpMode {
         int rightPos = rightEncoder.getCurrentPosition();
         int frontPos = frontEncoder.getCurrentPosition();
 
+
         telemetry.addData("leftPos", leftPos);
         telemetry.addData("rightPos", rightPos);
         telemetry.addData("frontPos", frontPos);
+        telemetry.addData("IMU", imu.getRobotOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle);
+
+
         /*
          * Do Stuff Here!
          */
