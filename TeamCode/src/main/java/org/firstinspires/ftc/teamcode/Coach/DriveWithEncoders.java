@@ -1,24 +1,31 @@
 package org.firstinspires.ftc.teamcode.Coach;
 
+import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.IntegratingGyroscope;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Interface.IDrive;
 import org.firstinspires.ftc.teamcode.Interface.IGyro;
+import org.firstinspires.ftc.teamcode.util.Encoder;
 
 public class DriveWithEncoders implements IDrive {
     private PIDController _PIDDriveDistance;
     private PIDController _PIDDriveStraight;
+    private PIDController _PIDRotate;
+
     private DcMotor _WheelFrontLeft;
     private DcMotor _WheelFrontRight;
     private DcMotor _WheelBackLeft;
     private DcMotor _WheelBackRight;
     private DcMotor _OdometerLeft;
     private DcMotor _OdometerRight;
-    private Telemetry _Telemetry;
     private double _power = 0.3;
     private double _targetDistance;
-    private IGyro _Gyro;
+    private IGyro _EHGyro;
 
     private double _correction;
     private double _leftCurrentPosition = 0;
@@ -28,37 +35,89 @@ public class DriveWithEncoders implements IDrive {
 
     private final long _MILLS_TO_SLEEP = 1000;
 
-    private double TICKS_PER_INCH = 40.5;
+    private static final double  TICKS_PER_INCH = 40.5;
     private final double TICKS_PER_REVOLUTION = 537.6;
     private final double DEGREES_PER_TICK = 360/TICKS_PER_REVOLUTION;
 
-    public DriveWithEncoders(
-            PIDController pidDriveDistance,
-            PIDController pidDriveStraight,
-            IGyro gyro,
-            DcMotor WheelFrontLeft,
-            DcMotor WheelFrontRight,
-            DcMotor WheelBackLeft,
-            DcMotor WheelBackRight,
-            DcMotor OdometerLeft,
-            DcMotor OdometerRight,
-            Telemetry telemetry) {
+    private final HardwareMap hardwareMap;
+    private final Telemetry telemetry;
 
-        _PIDDriveDistance = pidDriveDistance;
-        _PIDDriveStraight = pidDriveStraight;
-        _WheelBackLeft = WheelBackLeft;
-        _WheelBackRight = WheelBackRight;
-        _WheelFrontLeft = WheelFrontLeft;
-        _WheelFrontRight = WheelFrontRight;
-        _OdometerLeft = OdometerLeft;
-        _OdometerRight = OdometerRight;
-        _Gyro = gyro;
-        _Telemetry = telemetry;
+    // Range Sensor
+    RangeSensor rangeSensor;
+    boolean stopDistanceReached = false;
+
+    public DriveWithEncoders (HardwareMap hardwareMap, Telemetry telemetry){
+
+        this.hardwareMap = hardwareMap;
+        this.telemetry = telemetry;
+
+        Initialize();
+
+    }
+
+    private void Initialize(){
+
+
+        // Initialize Wheels
+        _WheelFrontLeft = hardwareMap.dcMotor.get("WheelFL");
+        _WheelFrontRight = hardwareMap.dcMotor.get("WheelFR");
+        _WheelBackLeft = hardwareMap.dcMotor.get("WheelBL");
+        _WheelBackRight = hardwareMap.dcMotor.get("WheelBR");
+
+
+        _WheelFrontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        _WheelFrontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        _WheelBackLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        _WheelBackRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        _WheelFrontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        _WheelFrontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        _WheelBackLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        _WheelBackRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        _WheelFrontLeft.setDirection(DcMotorSimple.Direction.FORWARD);
+        _WheelFrontRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        _WheelBackLeft.setDirection(DcMotorSimple.Direction.FORWARD);
+        _WheelBackRight.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        _WheelFrontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        _WheelFrontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        _WheelBackLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        _WheelBackRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        // Initialize Encoders
+        _OdometerLeft = hardwareMap.dcMotor.get("WheelBL");
+        _OdometerRight = hardwareMap.dcMotor.get("WheelFR");
+
+        _OdometerLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        _OdometerRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        _OdometerLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        _OdometerRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        // Initialize PID
+
+        /* Set PID proportional value to start reducing power at about 50 degrees of rotation.
+         * P by itself may stall before turn completed so we add a bit of I (integral) which
+         * causes the PID controller to gently increase power if the turn is not completed. */
+        _PIDRotate = new PIDController(0, 0, 0);
+
+        /* Set PID proportional value to produce non-zero correction value when robot veers off
+         * straight line. P value controls how sensitive the correction is. */
+        _PIDDriveDistance = new PIDController(0, 0, 0);
+        _PIDDriveStraight = new PIDController(0.05, 0, 0);
+
+        _EHGyro = new EHGyro(hardwareMap, telemetry);
+
+        // Initialize Range Sensor
+        rangeSensor = new RangeSensor(hardwareMap, telemetry);
+
     }
 
     @Override
-    public void Forward(double distanceInch, double power) {
+    public void Forward(double distanceInch, double power, double stopDistance) {
         sleep(100);
+        stopDistanceReached = false;
 
         _targetDistance = -Math.abs(InchesToDegrees(distanceInch)); // Encoder values decrease driving forward, hence a negative target distance.
         _power = -Math.abs(power);                                  // Power will be negative driving forward.
@@ -75,7 +134,7 @@ public class DriveWithEncoders implements IDrive {
         do { // Drive until we reach the target distance
             UpdateCurrentPositions();
             _power = _PIDDriveDistance.performPID(_leftCurrentPosition);
-            _correction = _PIDDriveStraight.performPID(_Gyro.GetHeadingEH());
+            _correction = _PIDDriveStraight.performPID(_EHGyro.GetHeadingEH());
 
             ShowTelemetry();
 
@@ -88,15 +147,20 @@ public class DriveWithEncoders implements IDrive {
             _WheelBackRight.setPower(_power - _correction);
             _WheelFrontLeft.setPower(_power + _correction);
             _WheelFrontRight.setPower(_power - _correction);
+
             UpdateCurrentPositions();
-        } while (!_PIDDriveDistance.onTarget());
+
+            if (rangeSensor.GetDistance() <= stopDistance)
+                stopDistanceReached = true;
+
+        } while (!_PIDDriveDistance.onTarget() || !stopDistanceReached);
 
         StopRobot();
 
         ShowTelemetry();
 
         // reset angle tracking on new heading.
-        _Gyro.ResetHeadingEH();
+        _EHGyro.ResetHeadingEH();
 
         sleep(_MILLS_TO_SLEEP);
     }
@@ -122,7 +186,7 @@ public class DriveWithEncoders implements IDrive {
         do { // Drive until we reach the target distance
             UpdateCurrentPositions();
             _power = _PIDDriveDistance.performPID(_leftCurrentPosition);
-            _correction = _PIDDriveStraight.performPID(_Gyro.GetHeadingEH());
+            _correction = _PIDDriveStraight.performPID(_EHGyro.GetHeadingEH());
 
             ShowTelemetry();
 
@@ -143,15 +207,16 @@ public class DriveWithEncoders implements IDrive {
         ShowTelemetry();
 
         // reset angle tracking on new heading.
-        _Gyro.ResetHeadingEH();
+        _EHGyro.ResetHeadingEH();
 
         sleep(_MILLS_TO_SLEEP);
     }
 
-    public void Straight(Direction direction, double distanceInch, double power) {
+    public void Straight(Direction direction, double distanceInch, double power, double stopDistance) {
         sleep(100);
 
         int sign;
+        stopDistanceReached = false;
         switch (direction) {
             case FORWARD:
                 sign = -1; // Encoder values Decrease driving forward, hence a negative target distance.
@@ -182,7 +247,7 @@ public class DriveWithEncoders implements IDrive {
         do { // Drive until we reach the target distance
             UpdateCurrentPositions();
             _power = _PIDDriveDistance.performPID(_leftCurrentPosition);
-            _correction = _PIDDriveStraight.performPID(_Gyro.GetHeadingEH());
+            _correction = _PIDDriveStraight.performPID(_EHGyro.GetHeadingEH());
 
             ShowTelemetry();
 
@@ -196,39 +261,114 @@ public class DriveWithEncoders implements IDrive {
             _WheelFrontLeft.setPower(_power + _correction);
             _WheelFrontRight.setPower(_power - _correction);
             UpdateCurrentPositions();
-        } while (!_PIDDriveDistance.onTarget());
+
+            if (rangeSensor.GetDistance() <= stopDistance)
+                stopDistanceReached = true;
+
+        } while (!_PIDDriveDistance.onTarget() || !stopDistanceReached);
 
         StopRobot();
 
         ShowTelemetry();
 
         // reset angle tracking on new heading.
-        _Gyro.ResetHeadingEH();
+        _EHGyro.ResetHeadingEH();
+
+        sleep(_MILLS_TO_SLEEP);
+    }
+
+    private int _degrees;
+
+    @Override
+    public void Left(int degrees, double power) {
+        sleep(100);
+        _degrees = Math.abs(degrees); // Left turn is positive degrees
+        _power = Math.abs(power);     // Given power will always be positive
+        _EHGyro.ResetHeadingEH();
+
+        ResetPIDRotate();
+
+        ShowTelemetry();
+
+        do {
+            _power = _PIDRotate.performPID(_EHGyro.GetHeadingEH()); // power will be negative on a right turn
+            ShowTelemetry();
+            _WheelFrontLeft.setPower(_power);
+            _WheelBackLeft.setPower(_power);
+            _WheelFrontRight.setPower(-_power);
+            _WheelBackRight.setPower(-_power);
+        } while (!_PIDRotate.onTarget());
+
+        StopRotation();
+
+        ShowTelemetry();
+
+        // reset angle tracking on new heading.
+        _EHGyro.ResetHeadingEH();
+
+        sleep(_MILLS_TO_SLEEP);
+
+    }
+
+    @Override
+    public void Right(int degrees, double power) {
+        sleep(100);
+        _degrees = -Math.abs(degrees); // Right turn is negative degrees
+        _power = Math.abs(power);      // Given power will always be positive
+        _EHGyro.ResetHeadingEH();
+
+        ResetPIDRotate();
+
+        ShowTelemetry();
+
+        do {
+            _power = _PIDRotate.performPID(_EHGyro.GetHeadingEH());
+            ShowTelemetry();
+            _WheelFrontLeft.setPower(_power);
+            _WheelBackLeft.setPower(_power);
+            _WheelFrontRight.setPower(-_power);
+            _WheelBackRight.setPower(-_power);
+        } while (!_PIDRotate.onTarget());
+
+        StopRotation();
+
+        ShowTelemetry();
+
+        // reset angle tracking on new heading.
+        _EHGyro.ResetHeadingEH();
 
         sleep(_MILLS_TO_SLEEP);
     }
 
     @Override
+    public void BasicMotorControl(double right_stick_y) {
+        _WheelFrontLeft.setPower(right_stick_y);
+        _WheelFrontRight.setPower(right_stick_y);
+        _WheelBackLeft.setPower(right_stick_y);
+        _WheelBackRight.setPower(right_stick_y);
+    }
+
+    @Override
     public void ShowTelemetry() {
-        _Telemetry.addData("PID", "--- PID Information ---");
-        _Telemetry.addData("power", _power);
-        _Telemetry.addData("target distance", _targetDistance);
+        telemetry.addData("PID", "--- PID Information ---");
+        telemetry.addData("power", _power);
+        telemetry.addData("target distance", _targetDistance);
 
-        _Telemetry.addData("PID", "--- DriveDistance Information ---");
-        _Telemetry.addData("CL", "Current Left  : " + _leftCurrentPosition);
-        _Telemetry.addData("TL", "Target Left: " + _leftTargetPosition);
-        _Telemetry.addData("CR", "Current Right  : " + _rightCurrentPosition);
-        _Telemetry.addData("TR", "Target Right: " + _rightTargetPosition);
-        _Telemetry.addData("target distance", _PIDDriveDistance.getSetpoint());
-        _Telemetry.addData("error", _PIDDriveDistance.getError());
+        telemetry.addData("PID", "--- DriveDistance Information ---");
+        telemetry.addData("CL", "Current Left  : " + _leftCurrentPosition);
+        telemetry.addData("TL", "Target Left: " + _leftTargetPosition);
+        telemetry.addData("CR", "Current Right  : " + _rightCurrentPosition);
+        telemetry.addData("TR", "Target Right: " + _rightTargetPosition);
+        telemetry.addData("target distance", _PIDDriveDistance.getSetpoint());
+        telemetry.addData("error", _PIDDriveDistance.getError());
 
-        _Telemetry.addData("PID", "--- DriveStraight Information ---");
-        _Telemetry.addData("heading", _Gyro.GetHeadingEH());
-        _Telemetry.addData("target heading", _PIDDriveStraight.getSetpoint());
-        _Telemetry.addData("correction", _correction);
+        telemetry.addData("PID", "--- DriveStraight Information ---");
+        telemetry.addData("heading", _EHGyro.GetHeadingEH());
+        telemetry.addData("target heading", _PIDDriveStraight.getSetpoint());
+        telemetry.addData("correction", _correction);
 
-        _Telemetry.addData("OD", "--- Odometer Information ---");
-        _Telemetry.update();
+        telemetry.addData("OD", "--- Odometer Information ---");
+        telemetry.update();
     }
 
     private boolean onTarget() {
@@ -339,5 +479,44 @@ public class DriveWithEncoders implements IDrive {
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
+    }
+    /* Start pid controller. PID controller will monitor the turn angle with respect to the
+     * target angle and reduce power as we approach the target angle. This is to prevent the
+     * robots momentum from overshooting the turn after we turn off the power. The PID controller
+     * reports onTarget() = true when the difference between turn angle and target angle is within
+     * 1% of target (tolerance) which is about 1 degree. This helps prevent overshoot. Overshoot is
+     * dependant on the motor and gearing configuration, starting power, weight of the robot and the
+     * on target tolerance. If the controller overshoots, it will reverse the sign of the output
+     * turning the robot back toward the set point value. */
+    private void ResetPIDRotate(){
+
+        _PIDRotate.reset();
+
+        // Proportional factor can be found by dividing the max desired pid output by
+        // the setpoint or target. Here 30% power is divided by 90 degrees (.30 / 90)
+        // to get a P factor of .003. This works for the robot we testing this code with.
+        // Your robot may vary but this way finding P works well in most situations.
+        double p = Math.abs(_power/_degrees);
+
+        // Integrative factor can be approximated by diving P by 100. Then you have to tune
+        // this value until the robot turns, slows down and stops accurately and also does
+        // not take too long to "home" in on the setpoint.
+        double i = p / 175.0;
+
+        _PIDRotate.setPID(p, i, 0);
+
+        _PIDRotate.setInputRange(0, _degrees);
+        _PIDRotate.setSetpoint(_degrees);
+        _PIDRotate.setOutputRange(0, _power); // TODO: May need to change minimum output
+        _PIDRotate.setTolerance(1.0 / Math.abs(_degrees) * 100.0); // One degree as a percentage of the total degrees
+        _PIDRotate.enable();
+    }
+
+    // turn the motors off.
+    private void StopRotation() {
+        _WheelFrontLeft.setPower(0);
+        _WheelBackLeft.setPower(0);
+        _WheelFrontRight.setPower(0);
+        _WheelBackRight.setPower(0);
     }
 }
