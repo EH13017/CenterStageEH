@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.comp;
 
+import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -7,6 +8,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
+
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 
 @TeleOp(name = "TeleOp Main", group = "Competition")
@@ -198,6 +201,8 @@ public class TeleOpMain extends OpMode {
       }
    }
 
+}
+
 
 
 //   // Here is a file to show how to use the REV Blinkin, along with a complete list of colors:
@@ -227,4 +232,3 @@ public class TeleOpMain extends OpMode {
 //         turnOffLEDPattern();
 //      }
 //   }
-}
