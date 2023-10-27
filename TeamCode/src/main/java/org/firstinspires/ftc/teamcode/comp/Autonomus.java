@@ -113,9 +113,9 @@ public class AutoBlue002 extends LinearOpMode {
         }
 
 
-    private void Initialize() {
+    private void Initialize(){
         // Initialize driving
         _Drive = new DriveWithEncoders(hardwareMap, telemetry);
     }
-
+}
 
