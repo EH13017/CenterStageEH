@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.comp;
+/*package org.firstinspires.ftc.teamcode.comp;
 
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -118,4 +118,4 @@ public class AutoBlue002 extends LinearOpMode {
         _Drive = new DriveWithEncoders(hardwareMap, telemetry);
     }
 }
-
+ */

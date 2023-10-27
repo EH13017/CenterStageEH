@@ -13,7 +13,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 
 @TeleOp(name = "TeleOp Main", group = "Competition")
-@Disabled
 public class TeleOpMain extends OpMode {
 
    /*
@@ -204,7 +203,7 @@ public class TeleOpMain extends OpMode {
 }
 
 
-//hi
+//hiii
 //   // Here is a file to show how to use the REV Blinkin, along with a complete list of colors:
 //   // https://www.revrobotics.com/content/docs/REV-11-1105-UM.pdf
 //   protected void setLEDPattern(RevBlinkinLedDriver.BlinkinPattern setPattern) {
