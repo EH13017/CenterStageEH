@@ -63,7 +63,7 @@ public class AutoBlue002 extends LinearOpMode {
     @Disabled   // comment out or remove this line to enable this OpMode
     public class SensorMRRangeSensor extends LinearOpMode {
 
-         (opModeIsActive()) {
+        {
             // get a reference to our compass
             rangeSensor = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "sensor_range");
 
@@ -113,9 +113,9 @@ public class AutoBlue002 extends LinearOpMode {
         }
 
 
-    private void Initialize(){
+    private void Initialize() {
         // Initialize driving
         _Drive = new DriveWithEncoders(hardwareMap, telemetry);
     }
-}
+
 
