@@ -146,9 +146,9 @@ public class TeleOpMain extends OpMode {
    // Get the inputs from the controller for power [ PRO ]
    //******************************************************************
    private void ProMotorControl(double left_stick_y, double left_stick_x, double right_stick_x) {
-      double powerLeftY = -left_stick_y;   // DRIVE : Backward -1 <---> 1 Forward
-      double powerLeftX = left_stick_x*-1; // STRAFE:     Left -1 <---> 1 Right
-      double powerRightX = -right_stick_x; // ROTATE:     Left -1 <---> 1 Right
+      double powerLeftY = left_stick_y;   // DRIVE : Backward -1 <---> 1 Forward
+      double powerLeftX = -left_stick_x*-1; // STRAFE:     Left -1 <---> 1 Right
+      double powerRightX = right_stick_x; // ROTATE:     Left -1 <---> 1 Right
 
       double r = Math.hypot(powerLeftX, powerLeftY);
       double robotAngle = Math.atan2(powerLeftY, powerLeftX) - Math.PI / 4;
