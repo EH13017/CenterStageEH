@@ -4,11 +4,10 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.Coach.DriveWithEncoders;
-import org.firstinspires.ftc.teamcode.comp.Autozakk;
 import org.firstinspires.ftc.teamcode.Interface.IDrive;
 
-@Autonomous(name = "Autozakk", group = "Competition")
-public class Autozakk extends LinearOpMode {
+@Autonomous(name = "autoblue", group = "competition")
+public class autoblue extends LinearOpMode {
 
     private IDrive _Drive;
 
@@ -25,13 +24,13 @@ public class Autozakk extends LinearOpMode {
         while (opModeIsActive()) {
 
             // Drive Forward for 24 inches or until 10cm from something
-            _Drive.Straight(IDrive.Direction.FORWARD, 2,.5, 0);
-
-          /*// Turn 90 degrees to the left
-            _Drive.Left(90, .25);
-
+            _Drive.Straight(IDrive.Direction.BACKWARD, 24, .5, 10);
+            sleep(2000);
+            // Turn 90 degrees to the left
+            _Drive.Right(90, .25);
+            sleep(2000);
             // Drive Forward for 60 inches or until 10cm from something
-            _Drive.Straight(IDrive.Direction.FORWARD, 60, .5, 10);*/
+            _Drive.Straight(IDrive.Direction.BACKWARD, 60, .5, 10);
 
             // break will exit the loop for us
             break;

@@ -95,6 +95,8 @@ public class DriveWithEncoders implements IDrive {
         _OdometerLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         _OdometerRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
+        _OdometerLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        _OdometerRight.setDirection(DcMotorSimple.Direction.REVERSE);
         // Initialize PID
 
         /* Set PID proportional value to start reducing power at about 50 degrees of rotation.
