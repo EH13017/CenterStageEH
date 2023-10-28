@@ -76,15 +76,15 @@ public class DriveWithEncoders implements IDrive {
         _WheelBackLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         _WheelBackRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-//        _WheelFrontLeft.setDirection(DcMotorSimple.Direction.FORWARD);
-//        _WheelFrontRight.setDirection(DcMotorSimple.Direction.REVERSE);
-//        _WheelBackLeft.setDirection(DcMotorSimple.Direction.FORWARD);
-//        _WheelBackRight.setDirection(DcMotorSimple.Direction.REVERSE);
-//
-        _WheelFrontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-        _WheelFrontRight.setDirection(DcMotorSimple.Direction.FORWARD);
-        _WheelBackLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-        _WheelBackRight.setDirection(DcMotorSimple.Direction.FORWARD);
+        _WheelFrontLeft.setDirection(DcMotorSimple.Direction.FORWARD);
+        _WheelFrontRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        _WheelBackLeft.setDirection(DcMotorSimple.Direction.FORWARD);
+        _WheelBackRight.setDirection(DcMotorSimple.Direction.REVERSE);
+
+//        _WheelFrontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+//        _WheelFrontRight.setDirection(DcMotorSimple.Direction.FORWARD);
+//        _WheelBackLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+//        _WheelBackRight.setDirection(DcMotorSimple.Direction.FORWARD);
 
         _WheelFrontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         _WheelFrontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
