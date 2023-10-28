@@ -101,7 +101,10 @@ public class DriveWithEncoders implements IDrive {
         _OdometerLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         _OdometerRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        _OdometerLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+//        _OdometerLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+//        _OdometerRight.setDirection(DcMotorSimple.Direction.FORWARD);
+
+        _OdometerLeft.setDirection(DcMotorSimple.Direction.FORWARD);
         _OdometerRight.setDirection(DcMotorSimple.Direction.REVERSE);
         // Initialize PID
 
@@ -142,7 +145,7 @@ public class DriveWithEncoders implements IDrive {
         do { // Drive until we reach the target distance
             UpdateCurrentPositions();
             _power = _PIDDriveDistance.performPID(_leftCurrentPosition);
-            _correction = _PIDDriveStraight.performPID(_EHGyro.GetHeadingEH());
+            _correction =0;// _PIDDriveStraight.performPID(_EHGyro.GetHeadingEH());
 
             ShowTelemetry();
 
@@ -227,10 +230,10 @@ public class DriveWithEncoders implements IDrive {
         stopDistanceReached = false;
         switch (direction) {
             case FORWARD:
-                sign = -1; // Encoder values Decrease driving forward, hence a negative target distance.
+                sign = 1; // Encoder values Decrease driving forward, hence a negative target distance.
                 break;
             case BACKWARD:
-                sign = 1;  // Encoder values Increase driving backward, hence a positive target distance.
+                sign = -1;  // Encoder values Increase driving backward, hence a positive target distance.
                 break;
             default:
                 sign = 0;  // If we enter in the wrong direction, the robot won't move.
@@ -255,7 +258,7 @@ public class DriveWithEncoders implements IDrive {
         do { // Drive until we reach the target distance
             UpdateCurrentPositions();
             _power = _PIDDriveDistance.performPID(_leftCurrentPosition);
-            _correction = _PIDDriveStraight.performPID(_EHGyro.GetHeadingEH());
+            _correction = 0;//_PIDDriveStraight.performPID(_EHGyro.GetHeadingEH());
 
             ShowTelemetry();
 
@@ -392,7 +395,7 @@ public class DriveWithEncoders implements IDrive {
 
     private void UpdateCurrentPositions() {
         // Get Current positions in degrees
-        _leftCurrentPosition = TicksToDegrees(_OdometerLeft.getCurrentPosition());
+        _leftCurrentPosition = TicksToDegrees(_OdometerLeft.getCurrentPosition() * -1);
         _rightCurrentPosition = TicksToDegrees(_OdometerRight.getCurrentPosition());
     }
 
