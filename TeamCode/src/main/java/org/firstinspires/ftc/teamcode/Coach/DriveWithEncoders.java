@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.hardware.IntegratingGyroscope;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Interface.IDrive;
 import org.firstinspires.ftc.teamcode.Interface.IGyro;
+import org.firstinspires.ftc.teamcode.comp.EHimu;
 import org.firstinspires.ftc.teamcode.util.Encoder;
 
 public class DriveWithEncoders implements IDrive {
@@ -75,10 +76,15 @@ public class DriveWithEncoders implements IDrive {
         _WheelBackLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         _WheelBackRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        _WheelFrontLeft.setDirection(DcMotorSimple.Direction.FORWARD);
-        _WheelFrontRight.setDirection(DcMotorSimple.Direction.REVERSE);
-        _WheelBackLeft.setDirection(DcMotorSimple.Direction.FORWARD);
-        _WheelBackRight.setDirection(DcMotorSimple.Direction.REVERSE);
+//        _WheelFrontLeft.setDirection(DcMotorSimple.Direction.FORWARD);
+//        _WheelFrontRight.setDirection(DcMotorSimple.Direction.REVERSE);
+//        _WheelBackLeft.setDirection(DcMotorSimple.Direction.FORWARD);
+//        _WheelBackRight.setDirection(DcMotorSimple.Direction.REVERSE);
+//
+        _WheelFrontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        _WheelFrontRight.setDirection(DcMotorSimple.Direction.FORWARD);
+        _WheelBackLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        _WheelBackRight.setDirection(DcMotorSimple.Direction.FORWARD);
 
         _WheelFrontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         _WheelFrontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -109,7 +115,7 @@ public class DriveWithEncoders implements IDrive {
         _PIDDriveDistance = new PIDController(0, 0, 0);
         _PIDDriveStraight = new PIDController(0.05, 0, 0);
 
-        _EHGyro = new EHGyro(hardwareMap, telemetry);
+        _EHGyro = new EHimu(hardwareMap, telemetry);
 
         // Initialize Range Sensor
         rangeSensor = new RangeSensor(hardwareMap, telemetry);

@@ -24,13 +24,13 @@ public class autoblue extends LinearOpMode {
         while (opModeIsActive()) {
 
             // Drive Forward for 24 inches or until 10cm from something
-            _Drive.Straight(IDrive.Direction.BACKWARD, 24, .5, 10);
+            _Drive.Straight(IDrive.Direction.FORWARD, 24, .5, 10);
             sleep(2000);
             // Turn 90 degrees to the left
-            _Drive.Right(90, .25);
+            _Drive.Left(90, .25);
             sleep(2000);
             // Drive Forward for 60 inches or until 10cm from something
-            _Drive.Straight(IDrive.Direction.BACKWARD, 60, .5, 10);
+            _Drive.Straight(IDrive.Direction.FORWARD, 60, .5, 10);
 
             // break will exit the loop for us
             break;
