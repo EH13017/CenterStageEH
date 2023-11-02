@@ -133,7 +133,7 @@ public class FASTAUTO extends OpMode {
 
         // Drive Controls
         ProMotorControl(0.4, 0, 0);
-        sleep(3500);
+       // sleep(10);
         ProMotorControl(0, 0, 0);
         ToggleSineDrive(oneButtonB);
 
