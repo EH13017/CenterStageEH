@@ -465,7 +465,7 @@ public class DriveWithEncoders implements IDrive {
         // Integrative factor can be approximated by diving P by 100. Then you have to tune
         // this value until the robot turns, slows down and stops accurately and also does
         // not take too long to "home" in on the setpoint.
-//        double i = p / 175.0; // TODO: Try and find an integral that works well with driving straight.
+       double i = p / 175.0; // TODO: Try and find an integral that works well with driving straight.
 
         _PIDDriveStraight.setPID(p, 0, 0);
 
