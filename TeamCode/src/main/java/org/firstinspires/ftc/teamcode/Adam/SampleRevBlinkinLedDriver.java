@@ -166,13 +166,17 @@ public class SampleRevBlinkinLedDriver extends OpMode {
     double pwm;
     protected void displayPattern()
     {
-        double green = 0.6925;
-        double red = 0.6525;
-        //blinkinLedDriver.setRGB(green-(sensorRange.getDistance(DistanceUnit.INCH)/100));
-        pwm = blinkinLedDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);
-        telemetry.addData("pwm", pwm);
-        telemetry.addData("Red", red);
-        telemetry.addData("Green", green);
+        //double green = 0.6925;
+        //double red = 0.6525;
+        //double blue = blinkinLedDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);
+        //double white = blinkinLedDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.WHITE);
+        blinkinLedDriver.setRGB(255,255,255);
+//        pwm = blinkinLedDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);
+//        telemetry.addData("pwm", pwm);
+//        telemetry.addData("Red", red);
+//        telemetry.addData("Green", green);
+//        telemetry.addData("Blue", blue);
+//        telemetry.addData("White", white);
         telemetry.update();
         patternName.setValue(pattern.toString());
     }

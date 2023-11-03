@@ -52,7 +52,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 @TeleOp(name = "Sensor: MR Gyro", group = "Sensor")
 @Disabled
 public class SensorMRGyro extends LinearOpMode {
-
   /* In this sample, for illustration purposes we use two interfaces on the one gyro object.
    * That's likely atypical: you'll probably use one or the other in any given situation,
    * depending on what you're trying to do. {@link IntegratingGyroscope} (and it's base interface,
