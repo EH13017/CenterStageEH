@@ -36,8 +36,8 @@ public class DriveWithEncoders implements IDrive {
 
     private final long _MILLS_TO_SLEEP = 1000;
 
-    private static final double  TICKS_PER_INCH = 40.5;
-    private final double TICKS_PER_REVOLUTION = 537.6;
+    private static final double  TICKS_PER_INCH = 336.88;
+    private final double TICKS_PER_REVOLUTION = 2000;
     private final double DEGREES_PER_TICK = 360/TICKS_PER_REVOLUTION;
 
     private final HardwareMap hardwareMap;
@@ -147,6 +147,7 @@ public class DriveWithEncoders implements IDrive {
             _power = _PIDDriveDistance.performPID(_leftCurrentPosition);
             _correction =0;// _PIDDriveStraight.performPID(_EHGyro.GetHeadingEH());
 
+
             ShowTelemetry();
 
             // TODO: We may need this.
@@ -199,12 +200,14 @@ public class DriveWithEncoders implements IDrive {
             _power = _PIDDriveDistance.performPID(_leftCurrentPosition);
             _correction = _PIDDriveStraight.performPID(_EHGyro.GetHeadingEH());
 
+
             ShowTelemetry();
 
             // TODO: We may need this.
 //            if (_power + _correction >= -0.2) {
 //                _power -= _correction;
 //            }
+
 
             _WheelBackLeft.setPower(_power + _correction);
             _WheelBackRight.setPower(_power - _correction);
@@ -259,6 +262,13 @@ public class DriveWithEncoders implements IDrive {
             UpdateCurrentPositions();
             _power = _PIDDriveDistance.performPID(_leftCurrentPosition);
             _correction = 0;//_PIDDriveStraight.performPID(_EHGyro.GetHeadingEH());
+
+            telemetry.addData("Power = .12","Power = .12");
+            telemetry.update();
+
+            if (_power <= .12){
+                _power = .12;
+            }
 
             ShowTelemetry();
 
