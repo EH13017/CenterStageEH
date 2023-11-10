@@ -18,6 +18,7 @@ public class PIDController
     private double m_setpoint = 0.0;
     private double m_error = 0.0;
     private double m_result = 0.0;
+    private int m_sign = -1;
 
     /**
      * Allocate a PID object with the given constants for P, I, D
@@ -39,7 +40,7 @@ public class PIDController
      */
     private void calculate()
     {
-        int     sign = 1;
+        int     sign = m_sign;
 
         // If enabled then proceed into controller calculations
         if (m_enabled)
@@ -72,7 +73,7 @@ public class PIDController
             // Set the current error to the previous error for the next cycle.
             m_prevError = m_error;
 
-            if (m_result < 0) sign = -1;    // Record sign of result.
+            if (m_result < 0) sign = m_sign*-1;    // Record sign of result.
 
             // Make sure the final result is within bounds. If we constrain the result, we make
             // sure the sign of the constrained result matches the original result sign.
@@ -201,11 +202,11 @@ public class PIDController
      */
     public void setSetpoint(double setpoint)
     {
-        int     sign = 1;
+        int     sign = m_sign;
 
         if (m_maximumInput > m_minimumInput)
         {
-            if (setpoint < 0) sign = -1;
+            if (setpoint < 0) sign = m_sign*-1;
 
             if (Math.abs(setpoint) > m_maximumInput)
                 m_setpoint = m_maximumInput * sign;
@@ -290,11 +291,11 @@ public class PIDController
      */
     public void setInput(double input)
     {
-        int     sign = 1;
+        int     sign = m_sign;
 
         if (m_maximumInput > m_minimumInput)
         {
-            if (input < 0) sign = -1;
+            if (input < 0) sign = m_sign*-1;
 
             if (Math.abs(input) > m_maximumInput)
                 m_input = m_maximumInput * sign;

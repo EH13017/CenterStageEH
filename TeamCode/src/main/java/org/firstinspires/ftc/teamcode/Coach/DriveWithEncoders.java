@@ -24,7 +24,7 @@ public class DriveWithEncoders implements IDrive {
     private DcMotor _WheelBackRight;
     private DcMotor _OdometerLeft;
     private DcMotor _OdometerRight;
-    private double _power = 0.3;
+    private double _power = 0.2;
     private double _targetDistance;
     private IGyro _EHGyro;
 
@@ -36,8 +36,8 @@ public class DriveWithEncoders implements IDrive {
 
     private final long _MILLS_TO_SLEEP = 1000;
 
-    private static final double  TICKS_PER_INCH = 40.5;
-    private final double TICKS_PER_REVOLUTION = 537.6;
+    private static final double  TICKS_PER_INCH = 336.88;
+    private final double TICKS_PER_REVOLUTION = 2000;
     private final double DEGREES_PER_TICK = 360/TICKS_PER_REVOLUTION;
 
     private final HardwareMap hardwareMap;
@@ -363,20 +363,20 @@ public class DriveWithEncoders implements IDrive {
     public void ShowTelemetry() {
         telemetry.addData("PID", "--- PID Information ---");
         telemetry.addData("power", _power);
-        telemetry.addData("target distance", _targetDistance);
+        //telemetry.addData("target distance", _targetDistance);
 
-        telemetry.addData("PID", "--- DriveDistance Information ---");
+        /*telemetry.addData("PID", "--- DriveDistance Information ---");
         telemetry.addData("CL", "Current Left  : " + _leftCurrentPosition);
         telemetry.addData("TL", "Target Left: " + _leftTargetPosition);
         telemetry.addData("CR", "Current Right  : " + _rightCurrentPosition);
         telemetry.addData("TR", "Target Right: " + _rightTargetPosition);
         telemetry.addData("target distance", _PIDDriveDistance.getSetpoint());
         telemetry.addData("error", _PIDDriveDistance.getError());
-
+*/
         telemetry.addData("PID", "--- DriveStraight Information ---");
         telemetry.addData("heading", _EHGyro.GetHeadingEH());
-        telemetry.addData("target heading", _PIDDriveStraight.getSetpoint());
-        telemetry.addData("correction", _correction);
+        /*telemetry.addData("target heading", _PIDDriveStraight.getSetpoint());
+        telemetry.addData("correction", _correction);*/
 
         telemetry.addData("OD", "--- Odometer Information ---");
         telemetry.update();
@@ -518,7 +518,7 @@ public class DriveWithEncoders implements IDrive {
 
         _PIDRotate.setInputRange(0, _degrees);
         _PIDRotate.setSetpoint(_degrees);
-        _PIDRotate.setOutputRange(0, _power); // TODO: May need to change minimum output
+        _PIDRotate.setOutputRange(.12, _power); // TODO: May need to change minimum output
         _PIDRotate.setTolerance(1.0 / Math.abs(_degrees) * 100.0); // One degree as a percentage of the total degrees
         _PIDRotate.enable();
     }
