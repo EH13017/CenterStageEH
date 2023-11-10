@@ -1,24 +1,44 @@
 package org.firstinspires.ftc.teamcode.Coach;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.IMU;
+import com.qualcomm.robotcore.hardware.IntegratingGyroscope;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 @TeleOp
 public class FieldCentricMecanumTeleOp extends LinearOpMode {
+
+   public ModernRoboticsI2cGyro modernRoboticsI2cGyro;
+   public IntegratingGyroscope gyro;
    @Override
    public void runOpMode() throws InterruptedException {
       // Declare our motors
+      FtcDashboard dashboard = FtcDashboard.getInstance();
+      telemetry = new MultipleTelemetry(telemetry, dashboard.getTelemetry());
+      // Initialize Gyro
+      modernRoboticsI2cGyro = hardwareMap.get(ModernRoboticsI2cGyro.class, "gyro");
+      gyro = (IntegratingGyroscope) modernRoboticsI2cGyro;
+      telemetry.addData("GC", "Gyro Calibrating. Do Not Move!");
+      telemetry.update();
+      modernRoboticsI2cGyro.calibrate();
+
+
       // Make sure your ID's match your configuration
-      DcMotor frontLeftMotor = hardwareMap.dcMotor.get("frontLeftMotor");
-      DcMotor backLeftMotor = hardwareMap.dcMotor.get("backLeftMotor");
-      DcMotor frontRightMotor = hardwareMap.dcMotor.get("frontRightMotor");
-      DcMotor backRightMotor = hardwareMap.dcMotor.get("backRightMotor");
+      DcMotor frontLeftMotor = hardwareMap.dcMotor.get("WheelFL");
+      DcMotor backLeftMotor = hardwareMap.dcMotor.get("WheelBL");
+      DcMotor frontRightMotor = hardwareMap.dcMotor.get("WheelFR");
+      DcMotor backRightMotor = hardwareMap.dcMotor.get("WheelBR");
 
       // Reverse the right side motors. This may be wrong for your setup.
       // If your robot moves backwards when commanded to go forwards,
@@ -28,14 +48,15 @@ public class FieldCentricMecanumTeleOp extends LinearOpMode {
       backRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
       // Retrieve the IMU from the hardware map
-      IMU imu = hardwareMap.get(IMU.class, "imu");
-      // Adjust the orientation parameters to match your robot
-      IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
-              RevHubOrientationOnRobot.LogoFacingDirection.UP,
-              RevHubOrientationOnRobot.UsbFacingDirection.FORWARD));
+//      IMU imu = hardwareMap.get(IMU.class, "imu");
+//      // Adjust the orientation parameters to match your robot
+//      IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
+//              RevHubOrientationOnRobot.LogoFacingDirection.UP,
+//              RevHubOrientationOnRobot.UsbFacingDirection.FORWARD));
       // Without this, the REV Hub's orientation is assumed to be logo up / USB forward
-      imu.initialize(parameters);
-
+      //imu.initialize(parameters);
+      double botHeading = 0;
+      Orientation angles;
       waitForStart();
 
       if (isStopRequested()) return;
@@ -49,10 +70,16 @@ public class FieldCentricMecanumTeleOp extends LinearOpMode {
          // it can be freely changed based on preference.
          // The equivalent button is start on Xbox-style controllers.
          if (gamepad1.options) {
-            imu.resetYaw();
+            //imu.resetYaw();
+            botHeading = 0;
          }
 
-         double botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
+         //double botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
+         angles = gyro.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, AngleUnit.RADIANS);
+         botHeading = angles.firstAngle;
+         telemetry.addData("botHeading",botHeading);
+         telemetry.update();
+
 
          // Rotate the movement direction counter to the bot's rotation
          double rotX = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
@@ -68,6 +95,12 @@ public class FieldCentricMecanumTeleOp extends LinearOpMode {
          double backLeftPower = (rotY - rotX + rx) / denominator;
          double frontRightPower = (rotY - rotX - rx) / denominator;
          double backRightPower = (rotY + rotX - rx) / denominator;
+
+         telemetry.addData("FL", frontLeftPower);
+         telemetry.addData("BL", backLeftPower);
+         telemetry.addData("FR", frontRightPower);
+         telemetry.addData("BR", backRightPower);
+         telemetry.update();
 
          frontLeftMotor.setPower(frontLeftPower);
          backLeftMotor.setPower(backLeftPower);

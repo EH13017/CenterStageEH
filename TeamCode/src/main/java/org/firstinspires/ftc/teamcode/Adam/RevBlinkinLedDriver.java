@@ -233,11 +233,13 @@ public class RevBlinkinLedDriver implements HardwareDevice {
         return pwm;
     }
 
-    public void setRGB(double pattern)
+    public void setRGB(double r, double g, double b)
     {
-        //double pwm = BASE_SERVO_POSITION + ((PATTERN_OFFSET * pattern.ordinal()) * PULSE_WIDTH_INCREMENTOR);
-        //RobotLog.vv(TAG, "Pattern: %s, %d, %f", pattern.toString(), pattern.ordinal(), pwm);
-        controller.setServoPosition(port, pattern);
+        double rr = r*(255/setPattern(RevBlinkinLedDriver.BlinkinPattern.RED));
+        double rg = g*(255/setPattern(BlinkinPattern.GREEN));
+        double rb = b*(255/setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE));
+
+        controller.setServoPosition(port, (rr+rg+rb)/3);
     }
 
     // HardwareDevice stuff
