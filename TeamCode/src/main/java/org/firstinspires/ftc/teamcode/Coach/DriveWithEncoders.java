@@ -147,6 +147,7 @@ public class DriveWithEncoders implements IDrive {
             _power = _PIDDriveDistance.performPID(_leftCurrentPosition);
             _correction =0;// _PIDDriveStraight.performPID(_EHGyro.GetHeadingEH());
 
+
             ShowTelemetry();
 
             // TODO: We may need this.
@@ -199,12 +200,14 @@ public class DriveWithEncoders implements IDrive {
             _power = _PIDDriveDistance.performPID(_leftCurrentPosition);
             _correction = _PIDDriveStraight.performPID(_EHGyro.GetHeadingEH());
 
+
             ShowTelemetry();
 
             // TODO: We may need this.
 //            if (_power + _correction >= -0.2) {
 //                _power -= _correction;
 //            }
+
 
             _WheelBackLeft.setPower(_power + _correction);
             _WheelBackRight.setPower(_power - _correction);
@@ -259,6 +262,13 @@ public class DriveWithEncoders implements IDrive {
             UpdateCurrentPositions();
             _power = _PIDDriveDistance.performPID(_leftCurrentPosition);
             _correction = 0;//_PIDDriveStraight.performPID(_EHGyro.GetHeadingEH());
+
+            telemetry.addData("Power = .12","Power = .12");
+            telemetry.update();
+
+            if (_power <= .12){
+                _power = .12;
+            }
 
             ShowTelemetry();
 
@@ -465,7 +475,7 @@ public class DriveWithEncoders implements IDrive {
         // Integrative factor can be approximated by diving P by 100. Then you have to tune
         // this value until the robot turns, slows down and stops accurately and also does
         // not take too long to "home" in on the setpoint.
-//        double i = p / 175.0; // TODO: Try and find an integral that works well with driving straight.
+       double i = p / 175.0; // TODO: Try and find an integral that works well with driving straight.
 
         _PIDDriveStraight.setPID(p, 0, 0);
 

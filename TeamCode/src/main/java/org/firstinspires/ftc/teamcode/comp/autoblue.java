@@ -25,10 +25,10 @@ public class autoblue extends LinearOpMode {
 
             // Drive Forward for 24 inches or until 10cm from something
             _Drive.Straight(IDrive.Direction.FORWARD, 24, .5, 10);
-            sleep(2000);
+            sleep(1000);
             // Turn 90 degrees to the left
             _Drive.Left(90, .25);
-            sleep(2000);
+            sleep(1000);
             // Drive Forward for 60 inches or until 10cm from something
             _Drive.Straight(IDrive.Direction.FORWARD, 60, .5, 10);
 
