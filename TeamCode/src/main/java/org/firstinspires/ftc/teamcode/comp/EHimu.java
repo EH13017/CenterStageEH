@@ -105,7 +105,8 @@ public class EHimu implements IGyro {
      */
     public double getHeading() {
         YawPitchRollAngles orientation = Gyro.getRobotYawPitchRollAngles();
-        return orientation.getYaw(AngleUnit.DEGREES);
+        double rawYaw = orientation.getYaw(AngleUnit.DEGREES);
+        return (rawYaw < 0 ) ? rawYaw + 360 : rawYaw;
     }
 
     @Override
