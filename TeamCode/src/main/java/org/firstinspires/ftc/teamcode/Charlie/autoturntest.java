@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.Charlie;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
@@ -32,6 +34,8 @@ public class autoturntest extends LinearOpMode {
     }
 
     private void Initialize(){
+        FtcDashboard dashboard = FtcDashboard.getInstance();
+        telemetry = new MultipleTelemetry(telemetry, dashboard.getTelemetry());
         // Initialize driving
         _Drive = new DriveWithEncoders(hardwareMap, telemetry);
     }
