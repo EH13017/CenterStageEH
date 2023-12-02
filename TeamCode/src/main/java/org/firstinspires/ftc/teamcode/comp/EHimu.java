@@ -105,15 +105,15 @@ public class EHimu implements IGyro {
      */
     public double getHeading() {
         YawPitchRollAngles orientation = Gyro.getRobotYawPitchRollAngles();
-        double rawYaw = orientation.getYaw(AngleUnit.DEGREES);
-        return (rawYaw < 0 ) ? rawYaw + 360 : rawYaw;
+        return orientation.getYaw(AngleUnit.DEGREES);
     }
 
     @Override
     public void ResetAngle() {
         //_lastAngles = Gyro.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-        lastHeading = getHeading();
-        _globalAngle = 0;
+//        lastHeading = getHeading();
+//        _globalAngle = 0;
+        Gyro.resetYaw();
     }
 
     /**

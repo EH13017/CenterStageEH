@@ -18,7 +18,7 @@ public class PIDController
     public double m_setpoint = 0.0;
     public double m_error = 0.0;
     public double m_result = 0.0;
-    private int m_sign = 1;
+    private int m_sign = -1;
 
     /**
      * Allocate a PID object with the given constants for P, I, D
@@ -49,16 +49,17 @@ public class PIDController
             m_error = m_setpoint - m_input;
 
             // If continuous is set to true allow wrap around
-            if (m_continuous)
-            {
-                if (Math.abs(m_error) > (m_maximumInput - m_minimumInput) / 2)
-                {
-                    if (m_error > 0)
-                        m_error = m_error - m_maximumInput + m_minimumInput;
-                    else
-                        m_error = m_error + m_maximumInput - m_minimumInput;
-                }
-            }
+            // TODO:uncomment continuious code if want to use
+//            if (m_continuous)
+//            {
+//                if (Math.abs(m_error) > (m_maximumInput - m_minimumInput) / 2)
+//                {
+//                    if (m_error > 0)
+//                        m_error = m_error - m_maximumInput + m_minimumInput;
+//                    else
+//                        m_error = m_error + m_maximumInput - m_minimumInput;
+//                }
+//            }
 
             // Integrate the errors as long as the upcoming integrator does
             // not exceed the minimum and maximum output thresholds.
