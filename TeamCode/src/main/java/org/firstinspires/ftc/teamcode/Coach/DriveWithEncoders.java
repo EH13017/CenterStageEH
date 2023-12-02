@@ -303,20 +303,16 @@ public class DriveWithEncoders implements IDrive {
     @Override
     public void Left(int degrees, double power) {
         sleep(100);
-        _degrees = 360 - Math.abs(degrees); // Left turn is positive degrees
+        _degrees = Math.abs(degrees); // Left turn is positive degrees
         _power = Math.abs(power);     // Given power will always be positive
         _EHGyro.ResetHeadingEH();
 
-        ResetPIDRotate(true);
+        ResetPIDRotate(false);
 
         ShowTelemetry();
 
         do {
-            int heading = _EHGyro.GetHeadingEH();
-            if (heading == 0){
-                heading = 360;
-            }
-            _power = _PIDRotate.performPID(heading); // power will be negative on a right turn
+            _power = _PIDRotate.performPID(_EHGyro.GetHeadingEH()); // power will be negative on a right turn
             ShowTelemetry();
             _WheelFrontLeft.setPower(_power);
             _WheelBackLeft.setPower(_power);
@@ -327,27 +323,28 @@ public class DriveWithEncoders implements IDrive {
         StopRotation();
 
         ShowTelemetry();
-
+        sleep(10000);
         // reset angle tracking on new heading.
         _EHGyro.ResetHeadingEH();
 
         sleep(_MILLS_TO_SLEEP);
 
     }
+//TODO: uncomment to work on right.
 
     @Override
     public void Right(int degrees, double power) {
         sleep(100);
-        _degrees = -Math.abs(degrees); // Right turn is negative degrees
+        _degrees = Math.abs(degrees); // Right turn is negative degrees
         _power = Math.abs(power);      // Given power will always be positive
         _EHGyro.ResetHeadingEH();
 
-        ResetPIDRotate(false);
+        ResetPIDRotate(true);
 
         ShowTelemetry();
 
         do {
-            _power = _PIDRotate.performPID(_EHGyro.GetHeadingEH());
+            _power = -_PIDRotate.performPID(_EHGyro.GetHeadingEH());
             ShowTelemetry();
             _WheelFrontLeft.setPower(_power);
             _WheelBackLeft.setPower(_power);
@@ -521,17 +518,15 @@ public class DriveWithEncoders implements IDrive {
      * dependant on the motor and gearing configuration, starting power, weight of the robot and the
      * on target tolerance. If the controller overshoots, it will reverse the sign of the output
      * turning the robot back toward the set point value. */
-    private void ResetPIDRotate(boolean isLeft){
+    private void ResetPIDRotate(boolean isRight){
 
-
-        double maximuminput = _degrees;
-        double minimuminput = 0;
-        if (isLeft) {
-            minimuminput = _degrees;
-            maximuminput = 359;
-        }
-
-
+        double minimuminput = _degrees - 5;
+        double maximuminput = _degrees + 5;
+//        if (isRight) {
+//            minimuminput *= -1;
+//            maximuminput *= -1;
+//            _degrees = -1;
+//        }
         _PIDRotate.reset();
 
         // Proportional factor can be found by dividing the max desired pid output by
