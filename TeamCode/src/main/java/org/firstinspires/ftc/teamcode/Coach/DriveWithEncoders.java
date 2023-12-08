@@ -346,10 +346,10 @@ public class DriveWithEncoders implements IDrive {
         do {
             _power = -_PIDRotate.performPID(_EHGyro.GetHeadingEH());
             ShowTelemetry();
-            _WheelFrontLeft.setPower(_power);
-            _WheelBackLeft.setPower(_power);
-            _WheelFrontRight.setPower(-_power);
-            _WheelBackRight.setPower(-_power);
+            _WheelFrontLeft.setPower(-_power);
+            _WheelBackLeft.setPower(-_power);
+            _WheelFrontRight.setPower(_power);
+            _WheelBackRight.setPower(_power);
         } while (!_PIDRotate.onTarget());
 
         StopRotation();
@@ -522,11 +522,11 @@ public class DriveWithEncoders implements IDrive {
 
         double minimuminput = _degrees - 5;
         double maximuminput = _degrees + 5;
-//        if (isRight) {
-//            minimuminput *= -1;
-//            maximuminput *= -1;
-//            _degrees = -1;
-//        }
+        if (isRight) {
+            minimuminput *= -1;
+            maximuminput *= -1;
+            _degrees = -1;
+        }
         _PIDRotate.reset();
 
         // Proportional factor can be found by dividing the max desired pid output by

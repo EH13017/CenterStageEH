@@ -16,6 +16,9 @@ public class autoturntest extends LinearOpMode {
     private IDrive _Drive;
 
     public static int Degrees = 89;
+//    public static double DriveDistance = 24;
+//    public static double Power = .25;
+//    public static double StopDistance = 10;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -29,11 +32,16 @@ public class autoturntest extends LinearOpMode {
 
         while (opModeIsActive()) {
 
+//            _Drive.Straight(IDrive.Direction.FORWARD, DriveDistance, Power, StopDistance);
+//            sleep(1000);
+
+            // break will exit the loop for us
             // Turn 90 degrees to the left
-            _Drive.Left(Degrees, .25);
+
+//            _Drive.Left(Degrees, .25);
 
             //TODO: uncomment when working on right.
-//            _Drive.Right(Degrees, .25);
+            _Drive.Right(Degrees, .25);
 
             // break will exit the loop for us
             break;
