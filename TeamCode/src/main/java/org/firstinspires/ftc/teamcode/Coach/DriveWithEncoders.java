@@ -261,12 +261,12 @@ public class DriveWithEncoders implements IDrive {
             _power = _PIDDriveDistance.performPID(_leftCurrentPosition);
             _correction = 0;//_PIDDriveStraight.performPID(_EHGyro.GetHeadingEH());
 
-            telemetry.addData("Power = .12","Power = .12");
-            telemetry.update();
-
-            if (_power <= .12){
-                _power = .12;
-            }
+//            telemetry.addData("Power = .12","Power = .12");
+//            telemetry.update();
+//
+//            if (_power <= .12){
+//                _power = .12;
+//            }
 
             ShowTelemetry();
 
