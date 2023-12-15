@@ -147,7 +147,6 @@ public class DriveWithEncoders implements IDrive {
             _power = _PIDDriveDistance.performPID(_leftCurrentPosition);
             _correction =0;// _PIDDriveStraight.performPID(_EHGyro.GetHeadingEH());
 
-
             ShowTelemetry();
 
             // TODO: We may need this.
@@ -200,14 +199,12 @@ public class DriveWithEncoders implements IDrive {
             _power = _PIDDriveDistance.performPID(_leftCurrentPosition);
             _correction = _PIDDriveStraight.performPID(_EHGyro.GetHeadingEH());
 
-
             ShowTelemetry();
 
             // TODO: We may need this.
 //            if (_power + _correction >= -0.2) {
 //                _power -= _correction;
 //            }
-
 
             _WheelBackLeft.setPower(_power + _correction);
             _WheelBackRight.setPower(_power - _correction);
@@ -263,13 +260,6 @@ public class DriveWithEncoders implements IDrive {
             _power = _PIDDriveDistance.performPID(_leftCurrentPosition);
             _correction = 0;//_PIDDriveStraight.performPID(_EHGyro.GetHeadingEH());
 
-            telemetry.addData("Power = .12","Power = .12");
-            telemetry.update();
-
-            if (_power <= .12){
-                _power = .12;
-            }
-
             ShowTelemetry();
 
             // TODO: We may need this.
@@ -307,7 +297,7 @@ public class DriveWithEncoders implements IDrive {
         _power = Math.abs(power);     // Given power will always be positive
         _EHGyro.ResetHeadingEH();
 
-        ResetPIDRotate(false);
+        ResetPIDRotate();
 
         ShowTelemetry();
 
@@ -323,33 +313,32 @@ public class DriveWithEncoders implements IDrive {
         StopRotation();
 
         ShowTelemetry();
-        sleep(10000);
+
         // reset angle tracking on new heading.
         _EHGyro.ResetHeadingEH();
 
         sleep(_MILLS_TO_SLEEP);
 
     }
-//TODO: uncomment to work on right.
 
     @Override
     public void Right(int degrees, double power) {
         sleep(100);
-        _degrees = Math.abs(degrees); // Right turn is negative degrees
+        _degrees = -Math.abs(degrees); // Right turn is negative degrees
         _power = Math.abs(power);      // Given power will always be positive
         _EHGyro.ResetHeadingEH();
 
-        ResetPIDRotate(true);
+        ResetPIDRotate();
 
         ShowTelemetry();
 
         do {
-            _power = -_PIDRotate.performPID(_EHGyro.GetHeadingEH());
+            _power = _PIDRotate.performPID(_EHGyro.GetHeadingEH());
             ShowTelemetry();
-            _WheelFrontLeft.setPower(-_power);
-            _WheelBackLeft.setPower(-_power);
-            _WheelFrontRight.setPower(_power);
-            _WheelBackRight.setPower(_power);
+            _WheelFrontLeft.setPower(_power);
+            _WheelBackLeft.setPower(_power);
+            _WheelFrontRight.setPower(-_power);
+            _WheelBackRight.setPower(-_power);
         } while (!_PIDRotate.onTarget());
 
         StopRotation();
@@ -374,14 +363,6 @@ public class DriveWithEncoders implements IDrive {
     public void ShowTelemetry() {
         telemetry.addData("PID", "--- PID Information ---");
         telemetry.addData("power", _power);
-
-        telemetry.addData("min", _PIDRotate.m_minimumInput);
-        telemetry.addData("max", _PIDRotate.m_maximumInput);
-        telemetry.addData("set", _PIDRotate.m_setpoint);
-        telemetry.addData("in", _PIDRotate.m_input);
-        telemetry.addData("error", _PIDRotate.m_error);
-        telemetry.addData("result", _PIDRotate.m_result);
-
         //telemetry.addData("target distance", _targetDistance);
 
         /*telemetry.addData("PID", "--- DriveDistance Information ---");
@@ -397,7 +378,7 @@ public class DriveWithEncoders implements IDrive {
         /*telemetry.addData("target heading", _PIDDriveStraight.getSetpoint());
         telemetry.addData("correction", _correction);*/
 
-//        telemetry.addData("OD", "--- Odometer Information ---");
+        telemetry.addData("OD", "--- Odometer Information ---");
         telemetry.update();
     }
 
@@ -484,7 +465,7 @@ public class DriveWithEncoders implements IDrive {
         // Integrative factor can be approximated by diving P by 100. Then you have to tune
         // this value until the robot turns, slows down and stops accurately and also does
         // not take too long to "home" in on the setpoint.
-       double i = p / 175.0; // TODO: Try and find an integral that works well with driving straight.
+//        double i = p / 175.0; // TODO: Try and find an integral that works well with driving straight.
 
         _PIDDriveStraight.setPID(p, 0, 0);
 
@@ -518,15 +499,8 @@ public class DriveWithEncoders implements IDrive {
      * dependant on the motor and gearing configuration, starting power, weight of the robot and the
      * on target tolerance. If the controller overshoots, it will reverse the sign of the output
      * turning the robot back toward the set point value. */
-    private void ResetPIDRotate(boolean isRight){
+    private void ResetPIDRotate(){
 
-        double minimuminput = _degrees - 5;
-        double maximuminput = _degrees + 5;
-        if (isRight) {
-            minimuminput *= -1;
-            maximuminput *= -1;
-            _degrees = -1;
-        }
         _PIDRotate.reset();
 
         // Proportional factor can be found by dividing the max desired pid output by
@@ -542,9 +516,9 @@ public class DriveWithEncoders implements IDrive {
 
         _PIDRotate.setPID(p, i, 0);
 
-        _PIDRotate.setInputRange(minimuminput, maximuminput);
+        _PIDRotate.setInputRange(0, _degrees);
         _PIDRotate.setSetpoint(_degrees);
-        _PIDRotate.setOutputRange(.2, _power); // TODO: May need to change minimum output
+        _PIDRotate.setOutputRange(.12, _power); // TODO: May need to change minimum output
         _PIDRotate.setTolerance(1.0 / Math.abs(_degrees) * 100.0); // One degree as a percentage of the total degrees
         _PIDRotate.enable();
     }
