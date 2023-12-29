@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.Coach;
 
 import com.qualcomm.hardware.lynx.LynxModule;
-import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
@@ -54,7 +53,7 @@ public class RobotHardwareMap {
    private final int baseResolution_x = 320;
    private final int baseResolution_y = 240;
    WebcamName frontCamera;
-   WebcamName backCamera;
+   //WebcamName backCamera;
 
    boolean controlHubBatteryVoltageEnabled = true;
    boolean expansionHubBatteryVoltageEnabled = true;
@@ -74,24 +73,24 @@ public class RobotHardwareMap {
       controlHub = baseHMap.get(LynxModule.class, "Control Hub");
       //expansionHub = baseHMap.get(LynxModule.class, "Expansion Hub 2");
 
-      //dc motor vs dc motor ex?
-      backLeftMotor = baseHMap.get(DcMotorEx.class, "RL");
-      backRightMotor = baseHMap.get(DcMotorEx.class, "RR");
-      frontLeftMotor = baseHMap.get(DcMotorEx.class, "FL");
-      frontRightMotor = baseHMap.get(DcMotorEx.class, "FR");
-      lifterMotor = baseHMap.get(DcMotorEx.class, "Lifter");
+//      //dc motor vs dc motor ex?
+//      backLeftMotor = baseHMap.get(DcMotorEx.class, "RL");
+//      backRightMotor = baseHMap.get(DcMotorEx.class, "RR");
+//      frontLeftMotor = baseHMap.get(DcMotorEx.class, "FL");
+//      frontRightMotor = baseHMap.get(DcMotorEx.class, "FR");
+//      lifterMotor = baseHMap.get(DcMotorEx.class, "Lifter");
 
       //Camera
       try {
-         frontCamera = baseHMap.get(WebcamName.class, "Front Camera");
-         backCamera = baseHMap.get(WebcamName.class, "Back Camera");
+         frontCamera = baseHMap.get(WebcamName.class, "Webcam 1");
+         //backCamera = baseHMap.get(WebcamName.class, "Back Camera");
          opMode.telemetry.addData("cameras", "success ");
       } catch (IllegalArgumentException iae){
          opMode.telemetry.addData("cameras", iae.getMessage());
       }
 
-      //Initializes the IMU
-      chImu = baseHMap.get(IMU.class, "chImu");
+//      //Initializes the IMU
+//      chImu = baseHMap.get(IMU.class, "chImu");
 
       //Bucky Parameters
         /*
@@ -101,13 +100,13 @@ public class RobotHardwareMap {
                                 RevHubOrientationOnRobot.UsbFacingDirection.UP
                     )
         );*/
-      IMU.Parameters myIMUParamaters = new IMU.Parameters(
-              new RevHubOrientationOnRobot(
-                      RevHubOrientationOnRobot.LogoFacingDirection.BACKWARD,
-                      RevHubOrientationOnRobot.UsbFacingDirection.UP
-              )
-      );
-      chImu.initialize(myIMUParamaters);
+//      IMU.Parameters myIMUParamaters = new IMU.Parameters(
+//              new RevHubOrientationOnRobot(
+//                      RevHubOrientationOnRobot.LogoFacingDirection.BACKWARD,
+//                      RevHubOrientationOnRobot.UsbFacingDirection.UP
+//              )
+//      );
+      //chImu.initialize(myIMUParamaters);
 
       opMode.telemetry.addData("Status", "done");
       opMode.telemetry.update();

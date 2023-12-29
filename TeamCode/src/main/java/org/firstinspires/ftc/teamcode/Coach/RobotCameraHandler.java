@@ -131,11 +131,11 @@ public class RobotCameraHandler {
             if(!parkingCameraIsOpen.get() && parkingCameraIsFaulty.get()) {
                if (showParkingCameraStream) {
                   if(parkingCameraInitAttemptCount == 1) {
-                     parkingCVCamera = OpenCvCameraFactory.getInstance().createWebcam(robotHardwareMap.backCamera, viewportContainerIds[0]);
+                     //parkingCVCamera = OpenCvCameraFactory.getInstance().createWebcam(robotHardwareMap.backCamera, viewportContainerIds[0]);
                      parkingCVCamera.showFpsMeterOnViewport(false);
                   }
                } else {
-                  parkingCVCamera = OpenCvCameraFactory.getInstance().createWebcam(robotHardwareMap.backCamera);
+                  //parkingCVCamera = OpenCvCameraFactory.getInstance().createWebcam(robotHardwareMap.backCamera);
                }
 
                Log.i(TAG, String.format("Initializing parking camera. Attempt #%d", parkingCameraInitAttemptCount));

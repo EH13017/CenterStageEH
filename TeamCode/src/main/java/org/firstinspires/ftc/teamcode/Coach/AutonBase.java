@@ -4,7 +4,6 @@ import android.util.Log;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
@@ -76,25 +75,25 @@ public class AutonBase extends LinearOpMode {
 
       imu = theHardwareMap.chImu;
 
-      theHardwareMap.backLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-      theHardwareMap.backRightMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-      theHardwareMap.frontLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-      theHardwareMap.frontRightMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-
-      theHardwareMap.frontLeftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-      theHardwareMap.frontRightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-      theHardwareMap.backLeftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-      theHardwareMap.backRightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-      theHardwareMap.backLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-      theHardwareMap.frontRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-      theHardwareMap.frontLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-      theHardwareMap.backRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-      theHardwareMap.frontLeftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-      theHardwareMap.frontRightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-      theHardwareMap.backLeftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-      theHardwareMap.backRightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//      theHardwareMap.backLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+//      theHardwareMap.backRightMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+//      theHardwareMap.frontLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+//      theHardwareMap.frontRightMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+//
+//      theHardwareMap.frontLeftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//      theHardwareMap.frontRightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//      theHardwareMap.backLeftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//      theHardwareMap.backRightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//
+//      theHardwareMap.backLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+//      theHardwareMap.frontRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+//      theHardwareMap.frontLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+//      theHardwareMap.backRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+//
+//      theHardwareMap.frontLeftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//      theHardwareMap.frontRightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//      theHardwareMap.backLeftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//      theHardwareMap.backRightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         /*aprilTagProcessor = new AprilTagProcessor.Builder()
                 .setDrawAxes(true)
@@ -123,7 +122,7 @@ public class AutonBase extends LinearOpMode {
                 theHardwareMap.backRightMotor.getCurrentPosition()
         );
         telemetry.update();*/
-      resetHeading();
+      //resetHeading();
    }
 
 
