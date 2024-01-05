@@ -134,7 +134,7 @@ public class Intake01 extends OpMode {
       } else if (twoButtonB && IntakeMoving == false) { // Moves intake backwards
          IntakeBackward();
          IntakeMoving = true;
-      } else if (IntakeMoving) {
+      } else if (IntakeMoving && (twoButtonB || twoButtonA)) {
          //do nothing while climbing
 
       } else { // Stops intake

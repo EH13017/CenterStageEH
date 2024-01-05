@@ -1,19 +1,17 @@
-package org.firstinspires.ftc.teamcode.Coach;
+package org.firstinspires.ftc.teamcode.Zakkk;
 
-import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.IntegratingGyroscope;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.Coach.PIDController;
+import org.firstinspires.ftc.teamcode.Coach.RangeSensor;
 import org.firstinspires.ftc.teamcode.Interface.IDrive;
 import org.firstinspires.ftc.teamcode.Interface.IGyro;
 import org.firstinspires.ftc.teamcode.comp.EHimu;
-import org.firstinspires.ftc.teamcode.util.Encoder;
 
-public class DriveWithEncoders implements IDrive {
+public class StrafeTesting01 implements IDrive {
     private PIDController _PIDDriveDistance;
     private PIDController _PIDDriveStraight;
     private PIDController _PIDRotate;
@@ -47,7 +45,7 @@ public class DriveWithEncoders implements IDrive {
     RangeSensor rangeSensor;
     boolean stopDistanceReached = false;
 
-    public DriveWithEncoders (HardwareMap hardwareMap, Telemetry telemetry){
+    public StrafeTesting01(HardwareMap hardwareMap, Telemetry telemetry){
 
         this.hardwareMap = hardwareMap;
         this.telemetry = telemetry;
@@ -360,22 +358,146 @@ public class DriveWithEncoders implements IDrive {
         sleep(_MILLS_TO_SLEEP);
     }
 
+//    public void StrafeLeft() {
+//        // Strafe left
+//        _WheelFrontLeft.setPower(-_power);
+//        _WheelBackLeft.setPower(_power);
+//        _WheelFrontRight.setPower(_power);
+//        _WheelBackRight.setPower(-_power);
+//    }
+//    public void StrafeRight() {
+//        // Strafe right
+//        _WheelFrontLeft.setPower(_power);
+//        _WheelBackLeft.setPower(-_power);
+//        _WheelFrontRight.setPower(-_power);
+//        _WheelBackRight.setPower(_power);
+//    }
+//    public void StrafeStop() {
+//        // Strafe right
+//        _WheelFrontLeft.setPower(0);
+//        _WheelBackLeft.setPower(0);
+//        _WheelFrontRight.setPower(0);
+//        _WheelBackRight.setPower(0);
+//    }
+
+    public void StrafeLeft(double distanceInch, double power) {
+        sleep(100);
+
+        stopDistanceReached = false;
+
+        _targetDistance = Math.abs(InchesToDegrees(distanceInch));
+        ResetEncoders();
+
+        // Update current and target distances
+        UpdateCurrentPositions();
+        UpdateTargetPositions(_targetDistance);
+
+        // Set up parameters for driving in a straight line.
+        ResetPIDDriveDistance();
+        ResetPIDDriveStraight();
+
+        ShowTelemetry();
+
+        do { // Drive until we reach the target distance
+            UpdateCurrentPositions();
+            _power = _PIDDriveDistance.performPID(_leftCurrentPosition);
+            _correction = 0;//_PIDDriveStraight.performPID(_EHGyro.GetHeadingEH());
+
+//            telemetry.addData("Power = .12","Power = .12");
+//            telemetry.update();
+//
+//            if (_power <= .12){
+//                _power = .12;
+//            }
+
+            ShowTelemetry();
+
+            // TODO: We may need this.
+//            if (_power + _correction >= -0.2) {
+//                _power -= _correction;
+//            }
+
+            _WheelFrontLeft.setPower(-_power);
+            _WheelBackLeft.setPower(_power);
+            _WheelFrontRight.setPower(_power);
+            _WheelBackRight.setPower(-_power);
+
+            UpdateCurrentPositions();
+
+        } while (!_PIDDriveDistance.onTarget() || !stopDistanceReached);
+
+        StopRobot();
+
+        ShowTelemetry();
+
+        // reset angle tracking on new heading.
+        _EHGyro.ResetHeadingEH();
+
+        sleep(_MILLS_TO_SLEEP);
+    }
+    public void StrafeRight(double distanceInch, double power) {
+        sleep(100);
+
+        stopDistanceReached = false;
+
+        _targetDistance = Math.abs(InchesToDegrees(distanceInch));
+        ResetEncoders();
+
+        // Update current and target distances
+        UpdateCurrentPositions();
+        UpdateTargetPositions(_targetDistance);
+
+        // Set up parameters for driving in a straight line.
+        ResetPIDDriveDistance();
+        ResetPIDDriveStraight();
+
+        ShowTelemetry();
+
+        do { // Drive until we reach the target distance
+            UpdateCurrentPositions();
+            _power = _PIDDriveDistance.performPID(_leftCurrentPosition);
+            _correction = 0;//_PIDDriveStraight.performPID(_EHGyro.GetHeadingEH());
+
+//            telemetry.addData("Power = .12","Power = .12");
+//            telemetry.update();
+//
+//            if (_power <= .12){
+//                _power = .12;
+//            }
+
+            ShowTelemetry();
+
+            // TODO: We may need this.
+//            if (_power + _correction >= -0.2) {
+//                _power -= _correction;
+//            }
+
+            _WheelFrontLeft.setPower(_power);
+            _WheelBackLeft.setPower(-_power);
+            _WheelFrontRight.setPower(-_power);
+            _WheelBackRight.setPower(_power);
+
+            UpdateCurrentPositions();
+
+        } while (!_PIDDriveDistance.onTarget() || !stopDistanceReached);
+
+        StopRobot();
+
+        ShowTelemetry();
+
+        // reset angle tracking on new heading.
+        _EHGyro.ResetHeadingEH();
+
+        sleep(_MILLS_TO_SLEEP);
+    }
+
+
     @Override
     public void BasicMotorControl(double right_stick_y) {
         _WheelFrontLeft.setPower(right_stick_y);
         _WheelFrontRight.setPower(right_stick_y);
         _WheelBackLeft.setPower(right_stick_y);
         _WheelBackRight.setPower(right_stick_y);
-    }
-
-    @Override
-    public void StrafeRight(double distanceInch, double power) {
-
-    }
-
-    @Override
-    public void StrafeLeft(double distanceInch, double power) {
-
     }
 
     @Override
