@@ -39,7 +39,7 @@ public class Climbtest extends OpMode {
     private double modifyBySine = Math.sin(Math.PI/4);
 
     // Climber
-    private  double climbpower = .2;
+    private  double climbpower = 1;
     private  boolean isclimbing = false;
 
 
@@ -76,7 +76,7 @@ public class Climbtest extends OpMode {
         WheelFrontRight.setDirection(DcMotorSimple.Direction.REVERSE);
         WheelBackLeft.setDirection(DcMotorSimple.Direction.FORWARD);
         WheelBackRight.setDirection(DcMotorSimple.Direction.REVERSE);
-        Climber.setDirection(DcMotorSimple.Direction.REVERSE);
+        Climber.setDirection(DcMotorSimple.Direction.FORWARD);
 
         WheelFrontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         WheelFrontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -144,7 +144,7 @@ public class Climbtest extends OpMode {
             climbdown();
             isclimbing = true;
 
-        } else if (isclimbing) {
+        } else if (isclimbing && (twoButtonB || twoButtonA)) {
             //do nothing while climbing
 
         } else {
