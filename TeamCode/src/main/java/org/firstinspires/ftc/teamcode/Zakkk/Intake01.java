@@ -21,7 +21,7 @@ public class Intake01 extends OpMode {
 
    // Intake
    private DcMotor Intake;
-   private double IntakePower = .2;
+   private double IntakePower = .5;
    private boolean IntakeMoving = false;
 
    // SlowMode Drive
@@ -144,7 +144,7 @@ public class Intake01 extends OpMode {
 
 //      // LEDs
 //      manageLEDColors();
-
+ 
       // Drive Controls
       ProMotorControl(oneLeftStickYPower, oneLeftStickXPower, oneRightStickXPower);
       ToggleSineDrive(oneButtonB);
