@@ -22,6 +22,7 @@ public class StrafeTesting01 implements IDrive {
     private DcMotor _WheelBackRight;
     private DcMotor _OdometerLeft;
     private DcMotor _OdometerRight;
+    private DcMotor _OdometerFront;
     private DcMotor Intake;
     private double _power = 0.2;
     private double _targetDistance;
@@ -32,6 +33,8 @@ public class StrafeTesting01 implements IDrive {
     private double _leftTargetPosition = 0;
     private double _rightCurrentPosition = 0;
     private double _rightTargetPosition = 0;
+    private double _strafeLeftCurrentPosition = 0;
+    private double _strafeLeftTargetPosition = 0;
 
     private final long _MILLS_TO_SLEEP = 1000;
 
@@ -98,18 +101,22 @@ public class StrafeTesting01 implements IDrive {
         // Initialize Encoders
         _OdometerLeft = hardwareMap.dcMotor.get("WheelBL");
         _OdometerRight = hardwareMap.dcMotor.get("WheelFR");
+        _OdometerFront = hardwareMap.dcMotor.get("WheelFL");
 
         _OdometerLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         _OdometerRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        _OdometerFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         _OdometerLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         _OdometerRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        _OdometerFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
 //        _OdometerLeft.setDirection(DcMotorSimple.Direction.REVERSE);
 //        _OdometerRight.setDirection(DcMotorSimple.Direction.FORWARD);
 
         _OdometerLeft.setDirection(DcMotorSimple.Direction.FORWARD);
         _OdometerRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        _OdometerFront.setDirection(DcMotorSimple.Direction.REVERSE);
         // Initialize PID
 
         /* Set PID proportional value to start reducing power at about 50 degrees of rotation.
@@ -438,54 +445,48 @@ public class StrafeTesting01 implements IDrive {
     public void StrafeRight(double distanceInch, double power) {
         sleep(100);
         _power = .4;
-//
-//        stopDistanceReached = false;
-//
-//        _targetDistance = Math.abs(InchesToDegrees(distanceInch));
-//        ResetEncoders();
-//
-//        // Update current and target distances
-//        UpdateCurrentPositions();
-//        UpdateTargetPositions(_targetDistance);
-//
-//        // Set up parameters for driving in a straight line.
-//        ResetPIDDriveDistance();
-//        ResetPIDDriveStraight();
-//
-//        ShowTelemetry();
-//
-//        do { // Drive until we reach the target distance
-//            UpdateCurrentPositions();
-//            _power = _PIDDriveDistance.performPID(_leftCurrentPosition);
-//            _correction = 0;//_PIDDriveStraight.performPID(_EHGyro.GetHeadingEH());
-//
-//
-//            ShowTelemetry();
+
+        stopDistanceReached = false;
+
+        _targetDistance = Math.abs(InchesToDegrees(distanceInch));
+        ResetEncoders();
+
+        // Update current and target distances
+        UpdateCurrentPositions();
+        UpdateTargetPositions(_targetDistance);
+
+        // Set up parameters for driving in a straight line.
+        ResetPIDDriveDistance();
+        ResetPIDDriveStraight();
+
+        ShowTelemetry();
+
+        do { // Drive until we reach the target distance
+            UpdateCurrentPositions();
+            _power = _PIDDriveDistance.performPID(_strafeLeftCurrentPosition);
+            _correction = 0;//_PIDDriveStraight.performPID(_EHGyro.GetHeadingEH());
+
+
+            ShowTelemetry();
 
 
             _WheelFrontLeft.setPower(_power);
             _WheelBackLeft.setPower(-_power);
             _WheelFrontRight.setPower(-_power);
             _WheelBackRight.setPower(_power);
-            sleep(1000);
-            _power = 0;
-            _WheelFrontLeft.setPower(_power);
-            _WheelBackLeft.setPower(-_power);
-            _WheelFrontRight.setPower(-_power);
-            _WheelBackRight.setPower(_power);
 
-//            UpdateCurrentPositions();
-//
-//        } while (!_PIDDriveDistance.onTarget() || !stopDistanceReached);
-//
-//        StopRobot();
-//
-//        ShowTelemetry();
-//
-//        // reset angle tracking on new heading.
-//        _EHGyro.ResetHeadingEH();
-//
-//        sleep(_MILLS_TO_SLEEP);
+            UpdateCurrentPositions();
+
+        } while (!_PIDDriveDistance.onTarget() || !stopDistanceReached);
+
+        StopRobot();
+
+        ShowTelemetry();
+
+        // reset angle tracking on new heading.
+        _EHGyro.ResetHeadingEH();
+
+        sleep(_MILLS_TO_SLEEP);
     }
 
     public void Intake(Direction direction, double distanceInch, double power, double stopDistance) {
@@ -592,7 +593,7 @@ public class StrafeTesting01 implements IDrive {
     }
 
     private boolean onTarget() {
-        return (Math.abs(_leftCurrentPosition) > Math.abs(_leftTargetPosition) || Math.abs(_rightCurrentPosition) > Math.abs(_rightTargetPosition));
+        return (Math.abs(_leftCurrentPosition) > Math.abs(_leftTargetPosition) || Math.abs(_rightCurrentPosition) > Math.abs(_rightTargetPosition) || Math.abs(_strafeLeftCurrentPosition) > Math.abs(_strafeLeftTargetPosition));
     }
 
     private void StopRobot() {
@@ -606,26 +607,32 @@ public class StrafeTesting01 implements IDrive {
         // Get Current positions in degrees
         _leftCurrentPosition = TicksToDegrees(_OdometerLeft.getCurrentPosition() * -1);
         _rightCurrentPosition = TicksToDegrees(_OdometerRight.getCurrentPosition());
+        _strafeLeftCurrentPosition = TicksToDegrees(_OdometerFront.getCurrentPosition());
     }
 
     private void UpdateTargetPositions(double distance) {
         // Get Target positions by adding current position and # of degrees to travel
         _leftTargetPosition = _leftCurrentPosition + _targetDistance;
         _rightTargetPosition = _rightCurrentPosition + _targetDistance;
+        _strafeLeftTargetPosition = _strafeLeftCurrentPosition + _targetDistance;
     }
 
     private void ResetEncoders() {
         _OdometerLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         _OdometerRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        _OdometerFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         _OdometerLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         _OdometerRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        _OdometerFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         _leftCurrentPosition = TicksToDegrees(_OdometerLeft.getCurrentPosition());
         _rightCurrentPosition = TicksToDegrees(_OdometerRight.getCurrentPosition());
+        _strafeLeftCurrentPosition = TicksToDegrees(_OdometerFront.getCurrentPosition());
 
         _leftTargetPosition = 0;
         _rightTargetPosition = 0;
+        _strafeLeftTargetPosition = 0;
     }
 
     private double CalcDistanceDegrees(double distanceInch) { return (TICKS_PER_INCH * distanceInch)/ DEGREES_PER_TICK; }

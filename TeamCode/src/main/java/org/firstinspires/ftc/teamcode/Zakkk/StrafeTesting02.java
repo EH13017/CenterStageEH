@@ -18,7 +18,7 @@ public class StrafeTesting02 extends LinearOpMode {
     public static double DriveDistance2 = 5;
     public static double Power = .25;
     public static double StopDistance = 10;
-    public static double StrafeDistance = 80;
+    public static double StrafeDistance = 6;
     public static double IntakeDistance = 5;
 
     @Override
@@ -44,7 +44,12 @@ public class StrafeTesting02 extends LinearOpMode {
 //            _Drive.Straight(IDrive.Direction.BACKWARD,DriveDistance,Power,StopDistance);
 //            sleep(1000);
 
-            _Drive.StrafeRight(StrafeDistance,Power);
+
+
+
+            // 1 = 46.5, 2 = 42, 3 = 45, 4 = 46, 5 =
+
+            _Drive.StrafeRight(6,Power);
             sleep(1000);
 
 //            _Drive.Intake(IDrive.Direction.FORWARD,IntakeDistance,Power,StopDistance);
