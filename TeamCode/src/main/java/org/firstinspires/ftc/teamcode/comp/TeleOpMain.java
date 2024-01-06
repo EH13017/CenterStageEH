@@ -24,6 +24,7 @@ public class TeleOpMain extends OpMode {
    private DcMotor WheelFrontRight;
    private DcMotor WheelBackLeft;
    private DcMotor WheelBackRight;
+   private DcMotor Climber;
 
    // SlowMode Drive
    private boolean slowModeDriveOn = true;
@@ -36,6 +37,16 @@ public class TeleOpMain extends OpMode {
    private boolean sineDriveOn = true;
    private boolean buttonSineIsPressed = false;
    private double modifyBySine = Math.sin(Math.PI/4);
+
+   //Climber
+
+   private  double climbpower = 1;
+   private  boolean isclimbing = false;
+
+   // Intake
+   private DcMotor Intake;
+   private double IntakePower = .2;
+   private boolean IntakeMoving = false;
 
 //   // REV Blinkin
 //   private RevBlinkinLedDriver LED;
@@ -52,26 +63,37 @@ public class TeleOpMain extends OpMode {
       WheelFrontRight = hardwareMap.dcMotor.get("WheelFR");
       WheelBackLeft = hardwareMap.dcMotor.get("WheelBL");
       WheelBackRight = hardwareMap.dcMotor.get("WheelBR");
+      Climber = hardwareMap.dcMotor.get("Climber");
+      Intake = hardwareMap.dcMotor.get("Intake");
 
       WheelFrontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
       WheelFrontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
       WheelBackLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
       WheelBackRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+      Climber.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+      Intake.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
       WheelFrontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
       WheelFrontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
       WheelBackLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
       WheelBackRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+      Climber.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+      Intake.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
       WheelFrontLeft.setDirection(DcMotorSimple.Direction.FORWARD);
       WheelFrontRight.setDirection(DcMotorSimple.Direction.REVERSE);
       WheelBackLeft.setDirection(DcMotorSimple.Direction.FORWARD);
       WheelBackRight.setDirection(DcMotorSimple.Direction.REVERSE);
+      Climber.setDirection(DcMotorSimple.Direction.FORWARD);
+      Intake.setDirection(DcMotorSimple.Direction.REVERSE);
 
       WheelFrontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
       WheelFrontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
       WheelBackLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
       WheelBackRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+      Climber.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+      Intake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
 
 
 
@@ -122,7 +144,38 @@ public class TeleOpMain extends OpMode {
       /*
        * Do Stuff Here!
        */
+      // Moving Climber up and down
+      if (twoButtonB && isclimbing == false){ // Button B moves Climber up.
+         climbup();
+         isclimbing = true;
 
+      } else if (twoButtonA && isclimbing == false) { // Button A moves Climber down.
+         climbdown();
+         isclimbing = true;
+
+      } else if (isclimbing && (twoButtonB || twoButtonA)) {
+         //do nothing while climbing
+
+      } else {
+         climberstop();
+         isclimbing = false;
+      }
+
+      //Intake
+
+      if (twoButtonX && IntakeMoving == false){ // Moves intake forward
+         IntakeForward();
+         IntakeMoving = true;
+      } else if (twoButtonY && IntakeMoving == false) { // Moves intake backwards
+         IntakeBackward();
+         IntakeMoving = true;
+      } else if (IntakeMoving) {
+         //do nothing while climbing
+
+      } else { // Stops intake
+         IntakeStop();
+         IntakeMoving = false;
+      }
 //      // LEDs
 //      manageLEDColors();
 
@@ -198,6 +251,38 @@ public class TeleOpMain extends OpMode {
          modifyBySine = 1;
          telemetry.addData("Sine Drive","OFF");
       }
+   }
+   private void climbup(){
+
+      Climber.setPower(climbpower);
+
+//        telemetry.addData("Climber",.2);
+   }
+
+
+   private void climbdown(){
+
+      Climber.setPower(-climbpower);
+
+//        telemetry.addData("Climber",-.2);
+   }
+
+
+   private void climberstop (){
+
+      Climber.setPower(0);
+
+   }
+
+   private void IntakeForward() {
+      Intake.setPower(IntakePower);
+   }
+
+   private void IntakeBackward() {
+      Intake.setPower(-IntakePower);
+   }
+   private void IntakeStop() {
+      Intake.setPower(0);
    }
 
 }
