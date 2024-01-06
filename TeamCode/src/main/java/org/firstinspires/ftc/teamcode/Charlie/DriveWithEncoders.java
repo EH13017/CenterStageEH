@@ -11,7 +11,7 @@ import org.firstinspires.ftc.teamcode.Interface.IDrive;
 import org.firstinspires.ftc.teamcode.Interface.IGyro;
 import org.firstinspires.ftc.teamcode.comp.EHimu;
 
-public class DriveWithEncoders implements IDrive {
+public abstract class DriveWithEncoders implements IDrive {
     private PIDController _PIDDriveDistance;
     private PIDController _PIDDriveStraight;
     private PIDController _PIDRotate;

@@ -379,6 +379,11 @@ public class DriveWithEncoders implements IDrive {
     }
 
     @Override
+    public void Intake(Direction direction, double distanceInch, double power, double stopDistance) {
+
+    }
+
+    @Override
     public void ShowTelemetry() {
         telemetry.addData("PID", "--- PID Information ---");
         telemetry.addData("power", _power);

@@ -22,6 +22,7 @@ public class StrafeTesting01 implements IDrive {
     private DcMotor _WheelBackRight;
     private DcMotor _OdometerLeft;
     private DcMotor _OdometerRight;
+    private DcMotor Intake;
     private double _power = 0.2;
     private double _targetDistance;
     private IGyro _EHGyro;
@@ -62,22 +63,26 @@ public class StrafeTesting01 implements IDrive {
         _WheelFrontRight = hardwareMap.dcMotor.get("WheelFR");
         _WheelBackLeft = hardwareMap.dcMotor.get("WheelBL");
         _WheelBackRight = hardwareMap.dcMotor.get("WheelBR");
+        Intake = hardwareMap.dcMotor.get("Intake");
 
 
         _WheelFrontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         _WheelFrontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         _WheelBackLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         _WheelBackRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        Intake.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         _WheelFrontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         _WheelFrontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         _WheelBackLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         _WheelBackRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        Intake.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         _WheelFrontLeft.setDirection(DcMotorSimple.Direction.FORWARD);
         _WheelFrontRight.setDirection(DcMotorSimple.Direction.REVERSE);
         _WheelBackLeft.setDirection(DcMotorSimple.Direction.FORWARD);
         _WheelBackRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        Intake.setDirection(DcMotorSimple.Direction.REVERSE);
 
 //        _WheelFrontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
 //        _WheelFrontRight.setDirection(DcMotorSimple.Direction.FORWARD);
@@ -88,6 +93,7 @@ public class StrafeTesting01 implements IDrive {
         _WheelFrontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         _WheelBackLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         _WheelBackRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        Intake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         // Initialize Encoders
         _OdometerLeft = hardwareMap.dcMotor.get("WheelBL");
@@ -358,6 +364,7 @@ public class StrafeTesting01 implements IDrive {
         sleep(_MILLS_TO_SLEEP);
     }
 
+    // Original idea for strafing
 //    public void StrafeLeft() {
 //        // Strafe left
 //        _WheelFrontLeft.setPower(-_power);
@@ -371,13 +378,6 @@ public class StrafeTesting01 implements IDrive {
 //        _WheelBackLeft.setPower(-_power);
 //        _WheelFrontRight.setPower(-_power);
 //        _WheelBackRight.setPower(_power);
-//    }
-//    public void StrafeStop() {
-//        // Strafe right
-//        _WheelFrontLeft.setPower(0);
-//        _WheelBackLeft.setPower(0);
-//        _WheelFrontRight.setPower(0);
-//        _WheelBackRight.setPower(0);
 //    }
 
     public void StrafeLeft(double distanceInch, double power) {
@@ -437,10 +437,77 @@ public class StrafeTesting01 implements IDrive {
     }
     public void StrafeRight(double distanceInch, double power) {
         sleep(100);
+        _power = .4;
+//
+//        stopDistanceReached = false;
+//
+//        _targetDistance = Math.abs(InchesToDegrees(distanceInch));
+//        ResetEncoders();
+//
+//        // Update current and target distances
+//        UpdateCurrentPositions();
+//        UpdateTargetPositions(_targetDistance);
+//
+//        // Set up parameters for driving in a straight line.
+//        ResetPIDDriveDistance();
+//        ResetPIDDriveStraight();
+//
+//        ShowTelemetry();
+//
+//        do { // Drive until we reach the target distance
+//            UpdateCurrentPositions();
+//            _power = _PIDDriveDistance.performPID(_leftCurrentPosition);
+//            _correction = 0;//_PIDDriveStraight.performPID(_EHGyro.GetHeadingEH());
+//
+//
+//            ShowTelemetry();
 
+
+            _WheelFrontLeft.setPower(_power);
+            _WheelBackLeft.setPower(-_power);
+            _WheelFrontRight.setPower(-_power);
+            _WheelBackRight.setPower(_power);
+            sleep(1000);
+            _power = 0;
+            _WheelFrontLeft.setPower(_power);
+            _WheelBackLeft.setPower(-_power);
+            _WheelFrontRight.setPower(-_power);
+            _WheelBackRight.setPower(_power);
+
+//            UpdateCurrentPositions();
+//
+//        } while (!_PIDDriveDistance.onTarget() || !stopDistanceReached);
+//
+//        StopRobot();
+//
+//        ShowTelemetry();
+//
+//        // reset angle tracking on new heading.
+//        _EHGyro.ResetHeadingEH();
+//
+//        sleep(_MILLS_TO_SLEEP);
+    }
+
+    public void Intake(Direction direction, double distanceInch, double power, double stopDistance) {
+        sleep(100);
+
+        int sign;
         stopDistanceReached = false;
+        switch (direction) {
+            case FORWARD:
+                sign = 1; // Encoder values Decrease driving forward, hence a negative target distance.
+                break;
+            case BACKWARD:
+                sign = -1;  // Encoder values Increase driving backward, hence a positive target distance.
+                break;
+            default:
+                sign = 0;  // If we enter in the wrong direction, the robot won't move.
+                break;
 
-        _targetDistance = Math.abs(InchesToDegrees(distanceInch));
+        }
+
+        _targetDistance = Math.abs(InchesToDegrees(distanceInch)) * sign;
+        _power = Math.abs(power) * sign;  // Power will be positive driving backward, and negative driving forward.
         ResetEncoders();
 
         // Update current and target distances
@@ -458,13 +525,6 @@ public class StrafeTesting01 implements IDrive {
             _power = _PIDDriveDistance.performPID(_leftCurrentPosition);
             _correction = 0;//_PIDDriveStraight.performPID(_EHGyro.GetHeadingEH());
 
-//            telemetry.addData("Power = .12","Power = .12");
-//            telemetry.update();
-//
-//            if (_power <= .12){
-//                _power = .12;
-//            }
-
             ShowTelemetry();
 
             // TODO: We may need this.
@@ -472,12 +532,11 @@ public class StrafeTesting01 implements IDrive {
 //                _power -= _correction;
 //            }
 
-            _WheelFrontLeft.setPower(_power);
-            _WheelBackLeft.setPower(-_power);
-            _WheelFrontRight.setPower(-_power);
-            _WheelBackRight.setPower(_power);
-
+           Intake.setPower(_power + _correction);
             UpdateCurrentPositions();
+
+            if (rangeSensor.GetDistance() <= stopDistance)
+                stopDistanceReached = true;
 
         } while (!_PIDDriveDistance.onTarget() || !stopDistanceReached);
 
@@ -491,6 +550,7 @@ public class StrafeTesting01 implements IDrive {
         sleep(_MILLS_TO_SLEEP);
     }
 
+    //Intake
 
     @Override
     public void BasicMotorControl(double right_stick_y) {
