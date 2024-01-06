@@ -437,58 +437,55 @@ public class StrafeTesting01 implements IDrive {
     }
     public void StrafeRight(double distanceInch, double power) {
         sleep(100);
-
-        stopDistanceReached = false;
-
-        _targetDistance = Math.abs(InchesToDegrees(distanceInch));
-        ResetEncoders();
-
-        // Update current and target distances
-        UpdateCurrentPositions();
-        UpdateTargetPositions(_targetDistance);
-
-        // Set up parameters for driving in a straight line.
-        ResetPIDDriveDistance();
-        ResetPIDDriveStraight();
-
-        ShowTelemetry();
-
-        do { // Drive until we reach the target distance
-            UpdateCurrentPositions();
-            _power = _PIDDriveDistance.performPID(_leftCurrentPosition);
-            _correction = 0;//_PIDDriveStraight.performPID(_EHGyro.GetHeadingEH());
-
-//            telemetry.addData("Power = .12","Power = .12");
-//            telemetry.update();
+        _power = .4;
 //
-//            if (_power <= .12){
-//                _power = .12;
-//            }
+//        stopDistanceReached = false;
+//
+//        _targetDistance = Math.abs(InchesToDegrees(distanceInch));
+//        ResetEncoders();
+//
+//        // Update current and target distances
+//        UpdateCurrentPositions();
+//        UpdateTargetPositions(_targetDistance);
+//
+//        // Set up parameters for driving in a straight line.
+//        ResetPIDDriveDistance();
+//        ResetPIDDriveStraight();
+//
+//        ShowTelemetry();
+//
+//        do { // Drive until we reach the target distance
+//            UpdateCurrentPositions();
+//            _power = _PIDDriveDistance.performPID(_leftCurrentPosition);
+//            _correction = 0;//_PIDDriveStraight.performPID(_EHGyro.GetHeadingEH());
+//
+//
+//            ShowTelemetry();
 
-            ShowTelemetry();
-
-            // TODO: We may need this.
-//            if (_power + _correction >= -0.2) {
-//                _power -= _correction;
-//            }
 
             _WheelFrontLeft.setPower(_power);
             _WheelBackLeft.setPower(-_power);
             _WheelFrontRight.setPower(-_power);
             _WheelBackRight.setPower(_power);
+            sleep(1000);
+            _power = 0;
+            _WheelFrontLeft.setPower(_power);
+            _WheelBackLeft.setPower(-_power);
+            _WheelFrontRight.setPower(-_power);
+            _WheelBackRight.setPower(_power);
 
-            UpdateCurrentPositions();
-
-        } while (!_PIDDriveDistance.onTarget() || !stopDistanceReached);
-
-        StopRobot();
-
-        ShowTelemetry();
-
-        // reset angle tracking on new heading.
-        _EHGyro.ResetHeadingEH();
-
-        sleep(_MILLS_TO_SLEEP);
+//            UpdateCurrentPositions();
+//
+//        } while (!_PIDDriveDistance.onTarget() || !stopDistanceReached);
+//
+//        StopRobot();
+//
+//        ShowTelemetry();
+//
+//        // reset angle tracking on new heading.
+//        _EHGyro.ResetHeadingEH();
+//
+//        sleep(_MILLS_TO_SLEEP);
     }
 
     public void Intake(Direction direction, double distanceInch, double power, double stopDistance) {
