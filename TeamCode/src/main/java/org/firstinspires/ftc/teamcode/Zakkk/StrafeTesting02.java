@@ -17,6 +17,7 @@ public class StrafeTesting02 extends LinearOpMode {
     public static double DriveDistance = 24;
     public static double Power = .25;
     public static double StopDistance = 10;
+    public static double StrafeDistance = 80;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -38,10 +39,10 @@ public class StrafeTesting02 extends LinearOpMode {
             Blue A2 = DD = 25.5 / P = .18 | Turn 90D Left | DD = 106 / P = .25
 
              */
-//            _Drive.Straight(IDrive.Direction.FORWARD, DriveDistance, Power, StopDistance);
-//            sleep(1000);
+            _Drive.Straight(IDrive.Direction.BACKWARD, DriveDistance, Power, StopDistance);
+            sleep(1000);
 
-            _Drive.StrafeRight(12,.2);
+            _Drive.StrafeRight(StrafeDistance,Power);
             sleep(1000);
 
             // break will exit the loop for us

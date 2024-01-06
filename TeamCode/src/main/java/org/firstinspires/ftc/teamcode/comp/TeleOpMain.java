@@ -144,6 +144,7 @@ public class TeleOpMain extends OpMode {
       /*
        * Do Stuff Here!
        */
+
       // Moving Climber up and down
       if (twoButtonB && isclimbing == false){ // Button B moves Climber up.
          climbup();
@@ -162,7 +163,6 @@ public class TeleOpMain extends OpMode {
       }
 
       //Intake
-
       if (twoButtonX && IntakeMoving == false){ // Moves intake forward
          IntakeForward();
          IntakeMoving = true;
