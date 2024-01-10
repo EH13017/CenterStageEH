@@ -1,5 +1,6 @@
-package org.firstinspires.ftc.teamcode.Zakkk;
+/*package org.firstinspires.ftc.teamcode.Zakkk;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -10,7 +11,7 @@ import org.firstinspires.ftc.teamcode.Coach.RangeSensor;
 import org.firstinspires.ftc.teamcode.Interface.IDrive;
 import org.firstinspires.ftc.teamcode.Interface.IGyro;
 import org.firstinspires.ftc.teamcode.comp.EHimu;
-
+@Disabled
 public class StrafeTesting01 implements IDrive {
     private PIDController _PIDDriveDistance;
     private PIDController _PIDDriveStraight;
@@ -121,11 +122,11 @@ public class StrafeTesting01 implements IDrive {
 
         /* Set PID proportional value to start reducing power at about 50 degrees of rotation.
          * P by itself may stall before turn completed so we add a bit of I (integral) which
-         * causes the PID controller to gently increase power if the turn is not completed. */
+         * causes the PID controller to gently increase power if the turn is not completed.
         _PIDRotate = new PIDController(0, 0, 0);
 
         /* Set PID proportional value to produce non-zero correction value when robot veers off
-         * straight line. P value controls how sensitive the correction is. */
+         * straight line. P value controls how sensitive the correction is.
         _PIDDriveDistance = new PIDController(0, 0, 0);
         _PIDDriveStraight = new PIDController(0.05, 0, 0);
 
@@ -582,11 +583,11 @@ public class StrafeTesting01 implements IDrive {
         telemetry.addData("TR", "Target Right: " + _rightTargetPosition);
         telemetry.addData("target distance", _PIDDriveDistance.getSetpoint());
         telemetry.addData("error", _PIDDriveDistance.getError());
-*/
+
         telemetry.addData("PID", "--- DriveStraight Information ---");
         telemetry.addData("heading", _EHGyro.GetHeadingEH());
         /*telemetry.addData("target heading", _PIDDriveStraight.getSetpoint());
-        telemetry.addData("correction", _correction);*/
+        telemetry.addData("correction", _correction);
 
 //        telemetry.addData("OD", "--- Odometer Information ---");
         telemetry.update();
@@ -699,7 +700,7 @@ public class StrafeTesting01 implements IDrive {
      *
      * @param milliseconds amount of time to sleep, in milliseconds
      * @see Thread#sleep(long)
-     */
+     *
     private final void sleep(long milliseconds) {
         try {
             Thread.sleep(milliseconds);
@@ -714,8 +715,8 @@ public class StrafeTesting01 implements IDrive {
      * 1% of target (tolerance) which is about 1 degree. This helps prevent overshoot. Overshoot is
      * dependant on the motor and gearing configuration, starting power, weight of the robot and the
      * on target tolerance. If the controller overshoots, it will reverse the sign of the output
-     * turning the robot back toward the set point value. */
-    private void ResetPIDRotate(boolean isRight){
+     * turning the robot back toward the set point value.
+
 
         double minimuminput = _degrees - 5;
         double maximuminput = _degrees + 5;
@@ -753,4 +754,4 @@ public class StrafeTesting01 implements IDrive {
         _WheelFrontRight.setPower(0);
         _WheelBackRight.setPower(0);
     }
-}
+}*/

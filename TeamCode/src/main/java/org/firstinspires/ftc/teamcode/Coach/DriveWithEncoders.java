@@ -1,17 +1,13 @@
 package org.firstinspires.ftc.teamcode.Coach;
 
-import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.IntegratingGyroscope;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Interface.IDrive;
 import org.firstinspires.ftc.teamcode.Interface.IGyro;
 import org.firstinspires.ftc.teamcode.comp.EHimu;
-import org.firstinspires.ftc.teamcode.util.Encoder;
 
 public class DriveWithEncoders implements IDrive {
     private PIDController _PIDDriveDistance;
@@ -369,12 +365,41 @@ public class DriveWithEncoders implements IDrive {
     }
 
     @Override
-    public void StrafeRight(double distanceInch, double power) {
+    public void StrafeRight(int SleepSeconds, double power) {
+
+        _power = .4;
+
+        _WheelFrontLeft.setPower(power);
+        _WheelFrontRight.setPower(-power);
+        _WheelBackLeft.setPower(-power);
+        _WheelBackRight.setPower(power);
+
+        long Seconds = SleepSeconds;
+        sleep(Seconds);
+
+        _WheelFrontLeft.setPower(0);
+        _WheelFrontRight.setPower(0);
+        _WheelBackLeft.setPower(0);
+        _WheelBackRight.setPower(0);
 
     }
 
     @Override
-    public void StrafeLeft(double distanceInch, double power) {
+    public void StrafeLeft(int SleepSeconds, double power) {
+
+
+        _WheelFrontLeft.setPower(-power);
+        _WheelFrontRight.setPower(power);
+        _WheelBackLeft.setPower(power);
+        _WheelBackRight.setPower(-power);
+
+        long Seconds = SleepSeconds;
+        sleep(Seconds);
+
+        _WheelFrontLeft.setPower(0);
+        _WheelFrontRight.setPower(0);
+        _WheelBackLeft.setPower(0);
+        _WheelBackRight.setPower(0);
 
     }
 

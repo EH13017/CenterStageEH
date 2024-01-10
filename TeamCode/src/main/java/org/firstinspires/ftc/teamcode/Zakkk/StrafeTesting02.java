@@ -4,6 +4,7 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.Coach.DriveWithEncoders;
@@ -11,6 +12,7 @@ import org.firstinspires.ftc.teamcode.Interface.IDrive;
 
 @Autonomous(name = "StrafeTesting02", group = "competition")
 @Config
+@Disabled
 public class StrafeTesting02 extends LinearOpMode {
 
     private IDrive _Drive;
@@ -67,6 +69,6 @@ public class StrafeTesting02 extends LinearOpMode {
         FtcDashboard dashboard = FtcDashboard.getInstance();
         telemetry = new MultipleTelemetry(telemetry, dashboard.getTelemetry());
         // Initialize driving
-        _Drive = new StrafeTesting01(hardwareMap, telemetry);
+        //_Drive = new StrafeTesting01(hardwareMap, telemetry);
     }
 }
