@@ -19,6 +19,9 @@ public interface IDrive {
 
     void StrafeLeft(int SleepSeconds, double power);
 
-    public void Intake(Direction direction, double distanceInch, double power, double stopDistance);
+   // public void Intake(Direction direction, double distanceInch, double power, double stopDistance);
+
+    void Intake(Direction direction, int IntakeRuntime, double power);
+
     public void ShowTelemetry();
 }

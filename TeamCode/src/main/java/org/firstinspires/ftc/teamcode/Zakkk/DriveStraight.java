@@ -38,9 +38,10 @@ public class DriveStraight extends LinearOpMode {
             Blue A2 = DD = 25.5 / P = .18 | Turn 90D Left | DD = 106 / P = .25
 
              */
-//            _Drive.Straight(IDrive.Direction.FORWARD, DriveDistance, Power, StopDistance);
-//            sleep(1000);
+            _Drive.Straight(IDrive.Direction.BACKWARD, DriveDistance, Power, StopDistance);
+            sleep(1000);
             _Drive.StrafeRight(8000,.4);
+            _Drive.Intake(IDrive.Direction.FORWARD,2000,.5);
 
             // break will exit the loop for us
             break;

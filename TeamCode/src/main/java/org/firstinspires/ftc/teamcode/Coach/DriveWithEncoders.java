@@ -18,6 +18,7 @@ public class DriveWithEncoders implements IDrive {
     private DcMotor _WheelFrontRight;
     private DcMotor _WheelBackLeft;
     private DcMotor _WheelBackRight;
+    private DcMotor _Intake;
     private DcMotor _OdometerLeft;
     private DcMotor _OdometerRight;
     private double _power = 0.2;
@@ -60,22 +61,26 @@ public class DriveWithEncoders implements IDrive {
         _WheelFrontRight = hardwareMap.dcMotor.get("WheelFR");
         _WheelBackLeft = hardwareMap.dcMotor.get("WheelBL");
         _WheelBackRight = hardwareMap.dcMotor.get("WheelBR");
+        _Intake = hardwareMap.dcMotor.get("Intake");
 
 
         _WheelFrontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         _WheelFrontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         _WheelBackLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         _WheelBackRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        _Intake.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         _WheelFrontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         _WheelFrontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         _WheelBackLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         _WheelBackRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        _Intake.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         _WheelFrontLeft.setDirection(DcMotorSimple.Direction.FORWARD);
         _WheelFrontRight.setDirection(DcMotorSimple.Direction.REVERSE);
         _WheelBackLeft.setDirection(DcMotorSimple.Direction.FORWARD);
         _WheelBackRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        _Intake.setDirection(DcMotorSimple.Direction.FORWARD);
 
 //        _WheelFrontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
 //        _WheelFrontRight.setDirection(DcMotorSimple.Direction.FORWARD);
@@ -86,6 +91,7 @@ public class DriveWithEncoders implements IDrive {
         _WheelFrontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         _WheelBackLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         _WheelBackRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        _Intake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         // Initialize Encoders
         _OdometerLeft = hardwareMap.dcMotor.get("WheelBL");
@@ -404,7 +410,26 @@ public class DriveWithEncoders implements IDrive {
     }
 
     @Override
-    public void Intake(Direction direction, double distanceInch, double power, double stopDistance) {
+    public void Intake(Direction direction, int IntakeRuntime, double power) {
+        sleep(100);
+
+        int sign;
+        stopDistanceReached = false;
+        switch (direction) {
+            case FORWARD:
+                sign = 1; // Encoder values Decrease driving forward, hence a negative target distance.
+                break;
+            case BACKWARD:
+                sign = -1;  // Encoder values Increase driving backward, hence a positive target distance.
+                break;
+            default:
+                sign = 0;  // If we enter in the wrong direction, the robot won't move.
+                break;
+
+        }
+        _Intake.setPower(power*sign);
+        sleep(IntakeRuntime);
+        _Intake.setPower(0);
 
     }
 
