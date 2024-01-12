@@ -45,7 +45,7 @@ public class TeleOpMain extends OpMode {
 
    // Intake
    private DcMotor Intake;
-   private double IntakePower = .6;
+   private double IntakePower = .3;
    private boolean IntakeMoving = false;
 
 //   // REV Blinkin
@@ -169,8 +169,8 @@ public class TeleOpMain extends OpMode {
       } else if (twoButtonY && IntakeMoving == false) { // Moves intake backwards
          IntakeBackward();
          IntakeMoving = true;
-      } else if (IntakeMoving) {
-         //do nothing while climbing
+      } else if (IntakeMoving && (twoButtonB || twoButtonA)) {
+         //do nothing while moving
 
       } else { // Stops intake
          IntakeStop();

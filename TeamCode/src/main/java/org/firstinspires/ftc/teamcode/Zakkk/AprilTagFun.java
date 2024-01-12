@@ -49,7 +49,7 @@ import java.util.List;
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list.
  */
 @TeleOp(name = "Fun", group = "Fun")
-
+@Disabled
 public class AprilTagFun extends LinearOpMode {
 
     private static final boolean USE_WEBCAM = false;  // true for webcam, false for phone camera

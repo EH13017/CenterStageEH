@@ -4,11 +4,12 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.Coach.DriveWithEncoders;
 import org.firstinspires.ftc.teamcode.Interface.IDrive;
-
+@Disabled
 @Autonomous(name = "autoturntest", group = "competition")
 @Config
 public class autoturntest extends LinearOpMode {

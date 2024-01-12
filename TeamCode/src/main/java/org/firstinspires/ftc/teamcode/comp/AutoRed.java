@@ -1,22 +1,21 @@
-package org.firstinspires.ftc.teamcode.Zakkk;
+package org.firstinspires.ftc.teamcode.comp;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.teamcode.Coach.DriveWithEncoders;
+import org.firstinspires.ftc.teamcode.comp.DriveWithEncoders;
 import org.firstinspires.ftc.teamcode.Interface.IDrive;
-@Disabled
-@Autonomous(name = "DriveStraightZakk", group = "competition")
+
+@Autonomous(name = "AutoRed", group = "competition")
 @Config
-public class DriveStraight extends LinearOpMode {
+public class AutoRed extends LinearOpMode {
 
     private IDrive _Drive;
     public static double DriveDistance = 24;
-    public static double Power = .25;
+    public static double Power = .3;
     public static double StopDistance = 10;
 
     @Override
@@ -41,7 +40,7 @@ public class DriveStraight extends LinearOpMode {
              */
             _Drive.Straight(IDrive.Direction.FORWARD,DriveDistance,Power,StopDistance);
             sleep(500);
-            _Drive.StrafeRight(6000,.4);
+            _Drive.StrafeLeft(6000,.4);
             sleep(500);
             _Drive.Intake(IDrive.Direction.FORWARD,4000,.3);
             sleep(1000);

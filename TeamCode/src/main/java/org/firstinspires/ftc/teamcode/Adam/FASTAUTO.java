@@ -16,7 +16,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
-
+@Disabled
 @Autonomous(name = "Fast Auto", group = "Competition")
 public class FASTAUTO extends OpMode {
 
