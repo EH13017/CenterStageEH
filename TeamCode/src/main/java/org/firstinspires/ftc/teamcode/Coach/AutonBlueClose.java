@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Coach;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 //import com.qualcomm.robotcore.hardware.DcMotor;
 
 //import org.firstinspires.ftc.teamcode.hardware.ArmPositions;
@@ -8,7 +9,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 //import org.firstinspires.ftc.teamcode.hardware.GripperPositions;
 //import org.firstinspires.ftc.teamcode.hardware.Light;
 //import org.firstinspires.ftc.teamcode.hardware.LightMode;
-
+@Disabled
 @Autonomous(name = "Auton Blue Close To Backstage", group = "Autons")
 public class AutonBlueClose extends AutonBase {
 
