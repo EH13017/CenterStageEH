@@ -3,11 +3,11 @@ package org.firstinspires.ftc.teamcode.comp;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.teamcode.Coach.DriveWithEncoders;
+import org.firstinspires.ftc.teamcode.comp.DriveWithEncoders;
 import org.firstinspires.ftc.teamcode.Interface.IDrive;
 
-@Autonomous(name = "autoblue", group = "competition")
-public class autoblue extends LinearOpMode {
+@Autonomous(name = "AutoBlue", group = "competition")
+public class AutoBlue extends LinearOpMode {
 
     private IDrive _Drive;
 

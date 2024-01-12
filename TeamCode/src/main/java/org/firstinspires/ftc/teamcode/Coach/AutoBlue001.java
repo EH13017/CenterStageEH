@@ -1,9 +1,10 @@
 package org.firstinspires.ftc.teamcode.Coach;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.teamcode.Interface.IDrive;
-
+@Disabled
 @Autonomous(name = "Coach: AutoBlue001", group = "Coach")
 public class AutoBlue001 extends LinearOpMode {
 

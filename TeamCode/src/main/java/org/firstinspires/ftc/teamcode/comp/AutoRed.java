@@ -1,27 +1,22 @@
-package org.firstinspires.ftc.teamcode.Zakkk;
+package org.firstinspires.ftc.teamcode.comp;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.teamcode.Coach.DriveWithEncoders;
+import org.firstinspires.ftc.teamcode.comp.DriveWithEncoders;
 import org.firstinspires.ftc.teamcode.Interface.IDrive;
 
-@Autonomous(name = "StrafeTesting02", group = "competition")
+@Autonomous(name = "AutoRed", group = "competition")
 @Config
-@Disabled
-public class StrafeTesting02 extends LinearOpMode {
+public class AutoRed extends LinearOpMode {
 
     private IDrive _Drive;
     public static double DriveDistance = 24;
-    public static double DriveDistance2 = 5;
-    public static double Power = .25;
+    public static double Power = .3;
     public static double StopDistance = 10;
-    public static double StrafeDistance = 6;
-    public static double IntakeDistance = 5;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -43,22 +38,13 @@ public class StrafeTesting02 extends LinearOpMode {
             Blue A2 = DD = 25.5 / P = .18 | Turn 90D Left | DD = 106 / P = .25
 
              */
-//            _Drive.Straight(IDrive.Direction.BACKWARD,DriveDistance,Power,StopDistance);
-//            sleep(1000);
-
-
-
-
-            // 1 = 46.5, 2 = 42, 3 = 45, 4 = 46, 5 =
-
-            _Drive.StrafeRight(6,Power);
+            _Drive.Straight(IDrive.Direction.FORWARD,DriveDistance,Power,StopDistance);
+            sleep(500);
+            _Drive.StrafeLeft(6000,.4);
+            sleep(500);
+            _Drive.Intake(IDrive.Direction.FORWARD,4000,.3);
             sleep(1000);
-
-//            _Drive.Intake(IDrive.Direction.FORWARD,IntakeDistance,Power,StopDistance);
-//            sleep(1000);
-//
-//            _Drive.Straight(IDrive.Direction.BACKWARD,DriveDistance2,Power,StopDistance);
-//            sleep(1000);
+ //           _Drive.Straight(IDrive.Direction.BACKWARD,6,Power,StopDistance);
 
             // break will exit the loop for us
             break;
@@ -69,6 +55,6 @@ public class StrafeTesting02 extends LinearOpMode {
         FtcDashboard dashboard = FtcDashboard.getInstance();
         telemetry = new MultipleTelemetry(telemetry, dashboard.getTelemetry());
         // Initialize driving
-        //_Drive = new StrafeTesting01(hardwareMap, telemetry);
+        _Drive = new DriveWithEncoders(hardwareMap, telemetry);
     }
 }

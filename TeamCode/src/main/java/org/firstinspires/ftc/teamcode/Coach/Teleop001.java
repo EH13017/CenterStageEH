@@ -15,7 +15,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.teamcode.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.util.Encoder;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-
+@Disabled
 @TeleOp(name = "TeleOp Teleop001", group = "Coach")
 //@Disabled
 public class Teleop001 extends OpMode {

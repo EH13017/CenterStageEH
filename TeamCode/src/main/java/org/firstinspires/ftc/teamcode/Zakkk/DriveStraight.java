@@ -4,12 +4,13 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.Coach.DriveWithEncoders;
 import org.firstinspires.ftc.teamcode.Interface.IDrive;
-
-@Autonomous(name = "DriveStraight", group = "competition")
+@Disabled
+@Autonomous(name = "DriveStraightZakk", group = "competition")
 @Config
 public class DriveStraight extends LinearOpMode {
 
@@ -38,8 +39,13 @@ public class DriveStraight extends LinearOpMode {
             Blue A2 = DD = 25.5 / P = .18 | Turn 90D Left | DD = 106 / P = .25
 
              */
-            _Drive.Straight(IDrive.Direction.FORWARD, DriveDistance, Power, StopDistance);
+            _Drive.Straight(IDrive.Direction.FORWARD,DriveDistance,Power,StopDistance);
+            sleep(500);
+            _Drive.StrafeRight(6000,.4);
+            sleep(500);
+            _Drive.Intake(IDrive.Direction.FORWARD,4000,.3);
             sleep(1000);
+ //           _Drive.Straight(IDrive.Direction.BACKWARD,6,Power,StopDistance);
 
             // break will exit the loop for us
             break;

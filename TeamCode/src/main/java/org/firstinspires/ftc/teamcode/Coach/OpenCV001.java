@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.Coach;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -32,7 +33,7 @@ import java.util.List;
 
 
 @TeleOp(name = "Coach: OpenCV001", group = "Coach")
-//@Disabled
+@Disabled
 public class OpenCV001 extends LinearOpMode
 {
     OpenCvWebcam webcam;

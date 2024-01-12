@@ -1,17 +1,14 @@
-package org.firstinspires.ftc.teamcode.Coach;
+package org.firstinspires.ftc.teamcode.comp;
 
-import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.IntegratingGyroscope;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.Coach.PIDController;
+import org.firstinspires.ftc.teamcode.Coach.RangeSensor;
 import org.firstinspires.ftc.teamcode.Interface.IDrive;
 import org.firstinspires.ftc.teamcode.Interface.IGyro;
-import org.firstinspires.ftc.teamcode.comp.EHimu;
-import org.firstinspires.ftc.teamcode.util.Encoder;
 
 public class DriveWithEncoders implements IDrive {
     private PIDController _PIDDriveDistance;
@@ -48,7 +45,7 @@ public class DriveWithEncoders implements IDrive {
     RangeSensor rangeSensor;
     boolean stopDistanceReached = false;
 
-    public DriveWithEncoders (HardwareMap hardwareMap, Telemetry telemetry){
+    public DriveWithEncoders(HardwareMap hardwareMap, Telemetry telemetry){
 
         this.hardwareMap = hardwareMap;
         this.telemetry = telemetry;
