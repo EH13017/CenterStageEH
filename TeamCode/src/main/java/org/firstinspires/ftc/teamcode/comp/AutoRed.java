@@ -42,7 +42,7 @@ public class AutoRed extends LinearOpMode {
             sleep(500);
             _Drive.StrafeLeft(6000,.4);
             sleep(500);
-            _Drive.Intake(IDrive.Direction.FORWARD,4000,.3);
+            _Drive.Intake(IDrive.Direction.FORWARD,4000,.35);
             sleep(1000);
  //           _Drive.Straight(IDrive.Direction.BACKWARD,6,Power,StopDistance);
 
