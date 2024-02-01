@@ -45,9 +45,8 @@ public class TeleOpMain extends OpMode {
 
    // Intake
    private DcMotor Intake;
-   private float Rtrigger = gamepad2.right_trigger;
-   private float Ltrigger = gamepad2.left_trigger;
-   //private boolean IntakeMoving = false;
+   private double IntakePower = .2;
+   private boolean IntakeMoving = false;
 
 //   // REV Blinkin
 //   private RevBlinkinLedDriver LED;
@@ -164,28 +163,19 @@ public class TeleOpMain extends OpMode {
       }
 
       //Intake
-      telemetry.addData("Rtrigger",Rtrigger);
-      telemetry.addData("Ltrigger",Ltrigger);
-      double rtrigger = Rtrigger;
-      double ltrigger = Ltrigger;
-      if (Rtrigger > Ltrigger){Intake.setPower(rtrigger);}
-      else if (Ltrigger > Rtrigger){Intake.setPower(-ltrigger);}
-      else{Intake.setPower(0);}
+      if (twoButtonX && IntakeMoving == false){ // Moves intake forward
+         IntakeForward();
+         IntakeMoving = true;
+      } else if (twoButtonY && IntakeMoving == false) { // Moves intake backwards
+         IntakeBackward();
+         IntakeMoving = true;
+      } else if (IntakeMoving) {
+         //do nothing while climbing
 
-
-//      if (twoButtonX && IntakeMoving == false){ // Moves intake forward
-//         IntakeForward();
-//         IntakeMoving = true;
-//      } else if (twoButtonY && IntakeMoving == false) { // Moves intake backwards
-//         IntakeBackward();
-//         IntakeMoving = true;
-//      } else if (IntakeMoving) {
-//         //do nothing while climbing
-//
-//      } else { // Stops intake
-//         IntakeStop();
-//         IntakeMoving = false;
-//      }
+      } else { // Stops intake
+         IntakeStop();
+         IntakeMoving = false;
+      }
 //      // LEDs
 //      manageLEDColors();
 
@@ -284,16 +274,16 @@ public class TeleOpMain extends OpMode {
 
    }
 
-//   private void IntakeForward() {
-//      Intake.setPower(IntakePower);
-//   }
-//
-//   private void IntakeBackward() {
-//      Intake.setPower(-IntakePower);
-//   }
-//   private void IntakeStop() {
-//      Intake.setPower(0);
-//   }
+   private void IntakeForward() {
+      Intake.setPower(IntakePower);
+   }
+
+   private void IntakeBackward() {
+      Intake.setPower(-IntakePower);
+   }
+   private void IntakeStop() {
+      Intake.setPower(0);
+   }
 
 }
 
