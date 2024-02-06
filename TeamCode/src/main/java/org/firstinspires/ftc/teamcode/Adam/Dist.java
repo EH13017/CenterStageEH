@@ -86,7 +86,7 @@ public class Dist extends LinearOpMode {
             telemetry.addData("did time out", Boolean.toString(sensorTimeOfFlight.didTimeoutOccur()));
 
 
-            telemetry.addData("PWM", Blinkin.setPattern(RevBlinkinLedDriver.BlinkinPattern.RED));
+            telemetry.addData("PWM", Blinkin.getPattern(RevBlinkinLedDriver.BlinkinPattern.RED));
             telemetry.update();
         }
     }

@@ -29,6 +29,8 @@
  */
 package org.firstinspires.ftc.teamcode.Adam;
 
+import static android.os.SystemClock.sleep;
+
 import com.qualcomm.hardware.R;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.hardware.ControlSystem;
@@ -205,8 +207,9 @@ public class RevBlinkinLedDriver implements HardwareDevice {
     protected final static int PATTERN_OFFSET = 10;
 
     protected ServoControllerEx controller;
-    private final int port;
+    private int port = 0;
 
+    public RevBlinkinLedDriver() {}
     /**
      * RevBlinkinLedDriver
      *
@@ -224,22 +227,43 @@ public class RevBlinkinLedDriver implements HardwareDevice {
      *
      * @param pattern the BlinkinPattern to display
      */
-    public double setPattern(BlinkinPattern pattern)
+    public void setPattern(BlinkinPattern pattern)
     {
         double pwm = BASE_SERVO_POSITION + ((PATTERN_OFFSET * pattern.ordinal()) * PULSE_WIDTH_INCREMENTOR);
         RobotLog.vv(TAG, "Pattern: %s, %d, %f", pattern.toString(), pattern.ordinal(), pwm);
 
         controller.setServoPosition(port, pwm);
+    }
+
+    public double getPattern(BlinkinPattern pattern)
+    {
+        double pwm = BASE_SERVO_POSITION + ((PATTERN_OFFSET * pattern.ordinal()) * PULSE_WIDTH_INCREMENTOR);
+        RobotLog.vv(TAG, "Pattern: %s, %d, %f", pattern.toString(), pattern.ordinal(), pwm);
+
         return pwm;
+    }
+
+    public void setPWM(double pwm){
+        controller.setServoPosition(port, pwm);
     }
 
     public void setRGB(double r, double g, double b)
     {
-        double rr = r*(255/setPattern(RevBlinkinLedDriver.BlinkinPattern.RED));
-        double rg = g*(255/setPattern(BlinkinPattern.GREEN));
-        double rb = b*(255/setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE));
+        //double rr = r*(255/getPattern(BlinkinPattern.RED));
+        //double rg = g*(255/getPattern(BlinkinPattern.GREEN));
+        //double rb = b*(255/getPattern(BlinkinPattern.BLUE));
 
-        controller.setServoPosition(port, (rr+rg+rb)/3);
+        // Loop
+        double pwn = 0.6525;
+        while (true) {
+            controller.setServoPosition(port, pwn);
+            sleep(250);
+            pwn += 0.0001;
+            if (pwn >= 0.6675) {
+                break;
+            }
+        }
+        //controller.setServoPosition(port, getPattern(BlinkinPattern.GREEN));
     }
 
     // HardwareDevice stuff

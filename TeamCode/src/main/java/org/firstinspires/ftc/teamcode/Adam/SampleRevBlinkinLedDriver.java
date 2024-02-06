@@ -54,7 +54,6 @@ import java.util.concurrent.TimeUnit;
  * Displays the first pattern upon init.
  */
 @TeleOp(name="BlinkinExample")
-@Disabled
 public class SampleRevBlinkinLedDriver extends OpMode {
 
     /*
@@ -67,7 +66,7 @@ public class SampleRevBlinkinLedDriver extends OpMode {
      */
     private final static int GAMEPAD_LOCKOUT = 500;
 
-    private DistanceSensor sensorRange;
+    //private DistanceSensor sensorRange;
     RevBlinkinLedDriver blinkinLedDriver;
     RevBlinkinLedDriver.BlinkinPattern pattern;
 
@@ -90,14 +89,14 @@ public class SampleRevBlinkinLedDriver extends OpMode {
         blinkinLedDriver = hardwareMap.get(RevBlinkinLedDriver.class, "Light");
         pattern = RevBlinkinLedDriver.BlinkinPattern.RAINBOW_RAINBOW_PALETTE;
 
-        sensorRange = hardwareMap.get(DistanceSensor.class, "sensor_range");
+        //sensorRange = hardwareMap.get(DistanceSensor.class, "sensor_range");
         display = telemetry.addData("Display Kind: ", displayKind.toString());
         patternName = telemetry.addData("Pattern: ", pattern.toString());
 
         ledCycleDeadline = new Deadline(LED_PERIOD, TimeUnit.SECONDS);
         gamepadRateLimit = new Deadline(GAMEPAD_LOCKOUT, TimeUnit.MILLISECONDS);
 
-        Rev2mDistanceSensor sensorTimeOfFlight = (Rev2mDistanceSensor)sensorRange;
+        //Rev2mDistanceSensor sensorTimeOfFlight = (Rev2mDistanceSensor)sensorRange;
     }
 
     @Override
@@ -166,17 +165,22 @@ public class SampleRevBlinkinLedDriver extends OpMode {
     double pwm;
     protected void displayPattern()
     {
-        //double green = 0.6925;
-        //double red = 0.6525;
-        //double blue = blinkinLedDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);
-        //double white = blinkinLedDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.WHITE);
-        blinkinLedDriver.setRGB(255,255,255);
+        RevBlinkinLedDriver Blinkin = new RevBlinkinLedDriver();
+
+        double red = Blinkin.getPattern(RevBlinkinLedDriver.BlinkinPattern.RED);
+        double green = Blinkin.getPattern(RevBlinkinLedDriver.BlinkinPattern.GREEN);
+        double blue = Blinkin.getPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);
+        double white = Blinkin.getPattern(RevBlinkinLedDriver.BlinkinPattern.WHITE);
+        double black = Blinkin.getPattern(RevBlinkinLedDriver.BlinkinPattern.BLACK);
+
+        blinkinLedDriver.setPWM((red+green)/2);
 //        pwm = blinkinLedDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);
 //        telemetry.addData("pwm", pwm);
-//        telemetry.addData("Red", red);
-//        telemetry.addData("Green", green);
-//        telemetry.addData("Blue", blue);
-//        telemetry.addData("White", white);
+        telemetry.addData("Red", red);
+        telemetry.addData("Green", green);
+        telemetry.addData("Blue", blue);
+        telemetry.addData("White", white);
+        telemetry.addData("Black", black);
         telemetry.update();
         patternName.setValue(pattern.toString());
     }
