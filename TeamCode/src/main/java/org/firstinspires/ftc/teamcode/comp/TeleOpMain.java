@@ -45,7 +45,7 @@ public class TeleOpMain extends OpMode {
 
    // Intake
    private DcMotor Intake;
-   private double IntakePower = .6;
+   private double IntakePower = 1;
    private boolean IntakeMoving = false;
 
 //   // REV Blinkin
