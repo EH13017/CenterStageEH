@@ -15,11 +15,11 @@ public class ClawTest extends OpMode {
     @Override
     public void init() {
         Claw1 = hardwareMap.servo.get("Claw1");
-        Claw1.setDirection(Servo.Direction.REVERSE);
-        Claw1.setPosition(0);
+        Claw1.setDirection(Servo.Direction.FORWARD);
+        Claw1.setPosition(0.46);
         Claw2 = hardwareMap.servo.get("Claw2");
-        Claw2.setDirection(Servo.Direction.FORWARD);
-        Claw2.setPosition(0);
+        Claw2.setDirection(Servo.Direction.REVERSE);
+        Claw2.setPosition(0.46);
 
         Touch = hardwareMap.get(TouchSensor.class, "Touch");
     }
@@ -31,12 +31,12 @@ public class ClawTest extends OpMode {
             while (Touch.isPressed()) {}
         }
         if (toggle) {
-            Claw1.setPosition(20);
-            Claw2.setPosition(0.5);
+            Claw1.setPosition(1);
+            Claw2.setPosition(1);
         }
         else {
-            Claw1.setPosition(0);
-            Claw2.setPosition(0);
+            Claw1.setPosition(0.46);
+            Claw2.setPosition(0.46);
         }
         telemetry.addData("Toggle", toggle);
         telemetry.addData("Claw1", Claw1.getPosition());
