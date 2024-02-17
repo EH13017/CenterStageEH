@@ -1,19 +1,15 @@
-package org.firstinspires.ftc.teamcode.comp;
+package org.firstinspires.ftc.teamcode.Adam;
 
-import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.TouchSensor;
 
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
-
-@TeleOp(name = "TeleOp Main", group = "Competition")
-public class TeleOpMain extends OpMode {
+@TeleOp(name = "TeleOp Test", group = "Competition")
+public class TeleOptTest extends OpMode {
 
    /*
     * Declare Hardware
@@ -37,6 +33,12 @@ public class TeleOpMain extends OpMode {
    private boolean sineDriveOn = true;
    private boolean buttonSineIsPressed = false;
    private double modifyBySine = Math.sin(Math.PI / 4);
+
+   //Arm
+   private DcMotor Slide1;
+   private DcMotor Slide2;
+   private Servo Spin;
+   private boolean toggle = false;
 
    //Climber
 
@@ -65,6 +67,9 @@ public class TeleOpMain extends OpMode {
       WheelBackRight = hardwareMap.dcMotor.get("WheelBR");
       Climber = hardwareMap.dcMotor.get("Climber");
       Intake = hardwareMap.dcMotor.get("Intake");
+      Slide1 = hardwareMap.get(DcMotor.class, "Slide1");
+      Slide2 = hardwareMap.get(DcMotor.class, "Slide2");
+      Spin = hardwareMap.get(Servo.class, "Spin");
 
       WheelFrontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
       WheelFrontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -79,6 +84,8 @@ public class TeleOpMain extends OpMode {
       WheelBackRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
       Climber.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
       Intake.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+      Slide1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODERS);
+      Slide2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODERS);
 
       WheelFrontLeft.setDirection(DcMotorSimple.Direction.FORWARD);
       WheelFrontRight.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -86,6 +93,8 @@ public class TeleOpMain extends OpMode {
       WheelBackRight.setDirection(DcMotorSimple.Direction.REVERSE);
       Climber.setDirection(DcMotorSimple.Direction.FORWARD);
       Intake.setDirection(DcMotorSimple.Direction.REVERSE);
+      Slide1.setDirection(DcMotorSimple.Direction.FORWARD);
+      Slide2.setDirection(DcMotorSimple.Direction.FORWARD);
 
       WheelFrontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
       WheelFrontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -160,6 +169,30 @@ public class TeleOpMain extends OpMode {
          isclimbing = false;
       }
 //
+      //Arm Controls
+      telemetry.addData("DpadUp", twoPadUp);
+      telemetry.addData("DpadDown", twoPadDown);
+      if (twoPadUp == true) {
+         slidesUp(0.6);
+      }
+      else if (twoPadDown == true) {
+         slidesDown(0.3);
+      }
+      else if (!twoPadUp) {
+         if (!twoPadUp) {
+            slidesStop();
+         }
+      }
+      //Spinny Winnie
+      if (twoPadRight) {
+         toggle = !toggle;
+         while (twoPadRight) {
+            twoPadRight = gamepad2.dpad_right;
+         }
+         twoPadRight = gamepad2.dpad_right;
+      }
+      telemetry.addData("toggle", toggle);
+
       //Intake
       if (twoButtonX && IntakeMoving == false){ // Moves intake forward
          IntakeForward();
@@ -277,6 +310,22 @@ public class TeleOpMain extends OpMode {
 
       Climber.setPower(0);
 
+   }
+
+
+   public void slidesUp(double power) {
+      Slide1.setPower(power);
+      Slide2.setPower(power);
+   }
+
+   public void slidesDown(double power) {
+      Slide1.setPower(-power);
+      Slide2.setPower(-power);
+   }
+
+   public void slidesStop() {
+      Slide1.setPower(0);
+      Slide2.setPower(0);
    }
 
 //
