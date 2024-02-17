@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.hardware.TouchSensor;
 public class ClawTest extends OpMode {
     Servo Claw1;
     Servo Claw2;
-    TouchSensor Touch;
+    boolean Touch;
     boolean toggle = false;
 
     @Override
@@ -20,15 +20,14 @@ public class ClawTest extends OpMode {
         Claw2 = hardwareMap.servo.get("Claw2");
         Claw2.setDirection(Servo.Direction.REVERSE);
         Claw2.setPosition(0.46);
-
-        Touch = hardwareMap.get(TouchSensor.class, "Touch");
     }
 
     @Override
     public void loop() {
-        if (Touch.isPressed()) {
+        Touch = gamepad2.a;
+        if (Touch) {
             toggle = !toggle;
-            while (Touch.isPressed()) {}
+            while (Touch) {}
         }
         if (toggle) {
             Claw1.setPosition(1);
