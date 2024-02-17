@@ -36,21 +36,19 @@ public class TeleOpMain extends OpMode {
    // SineDrive
    private boolean sineDriveOn = true;
    private boolean buttonSineIsPressed = false;
-   private double modifyBySine = Math.sin(Math.PI/4);
+   private double modifyBySine = Math.sin(Math.PI / 4);
 
    //Climber
 
-   private  double climbpower = 1;
-   private  boolean isclimbing = false;
+   private double climbpower = 1;
+   private boolean isclimbing = false;
 
-   // Intake
+//    Intake
    private DcMotor Intake;
-   private float Rtrigger = gamepad2.right_trigger;
-   private float Ltrigger = gamepad2.left_trigger;
-//   private double IntakePower = 1;
-//   private boolean IntakeMoving = false;
+   private double IntakePower = .2;
+   private boolean IntakeMoving = false;
 
-//   // REV Blinkin
+   // REV Blinkin
 //   private RevBlinkinLedDriver LED;
 
 
@@ -95,8 +93,6 @@ public class TeleOpMain extends OpMode {
       WheelBackRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
       Climber.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
       Intake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-
 
 
 //      // Initialize REV Blinkin
@@ -148,7 +144,7 @@ public class TeleOpMain extends OpMode {
        */
 
       // Moving Climber up and down
-      if (twoButtonB && isclimbing == false){ // Button B moves Climber up.
+      if (twoButtonB && isclimbing == false) { // Button B moves Climber up.
          climbup();
          isclimbing = true;
 
@@ -163,30 +159,21 @@ public class TeleOpMain extends OpMode {
          climberstop();
          isclimbing = false;
       }
-
-      //Intake
-      telemetry.addData("Rtrigger",Rtrigger);
-      telemetry.addData("Ltrigger",Ltrigger);
-      double rtrigger = Rtrigger;
-      double ltrigger = Ltrigger;
-      if (Rtrigger > Ltrigger){Intake.setPower(rtrigger);}
-      else if (Ltrigger > Rtrigger){Intake.setPower(-ltrigger);}
-      else{Intake.setPower(0);}
-
-
-//      if (twoButtonX && IntakeMoving == false){ // Moves intake forward
-//         IntakeForward();
-//         IntakeMoving = true;
-//      } else if (twoButtonY && IntakeMoving == false) { // Moves intake backwards
-//         IntakeBackward();
-//         IntakeMoving = true;
-//      } else if (IntakeMoving) {
-//         //do nothing while climbing
 //
-//      } else { // Stops intake
-//         IntakeStop();
-//         IntakeMoving = false;
-//      }
+      //Intake
+      if (twoButtonX && IntakeMoving == false){ // Moves intake forward
+         IntakeForward();
+         IntakeMoving = true;
+      } else if (twoButtonY && IntakeMoving == false) { // Moves intake backwards
+         IntakeBackward();
+         IntakeMoving = true;
+      } else if (IntakeMoving && (twoButtonX || twoButtonY)) {
+         //do nothing while climbing
+
+      } else { // Stops intake
+         IntakeStop();
+         IntakeMoving = false;
+      }
 //      // LEDs
 //      manageLEDColors();
 
@@ -211,7 +198,7 @@ public class TeleOpMain extends OpMode {
    //******************************************************************
    private void ProMotorControl(double left_stick_y, double left_stick_x, double right_stick_x) {
       double powerLeftY = left_stick_y;   // DRIVE : Backward -1 <---> 1 Forward
-      double powerLeftX = -left_stick_x*-1; // STRAFE:     Left -1 <---> 1 Right
+      double powerLeftX = -left_stick_x * -1; // STRAFE:     Left -1 <---> 1 Right
       double powerRightX = right_stick_x; // ROTATE:     Left -1 <---> 1 Right
 
       double r = Math.hypot(powerLeftX, powerLeftY);
@@ -222,29 +209,32 @@ public class TeleOpMain extends OpMode {
       final double v3 = r * Math.sin(robotAngle) / modifyBySine + leftX;
       final double v4 = r * Math.cos(robotAngle) / modifyBySine - leftX;
 
-      WheelFrontLeft.setPower(v1* percentToSlowDrive);
-      WheelFrontRight.setPower(v2* percentToSlowDrive);
-      WheelBackLeft.setPower(v3* percentToSlowDrive);
-      WheelBackRight.setPower(v4* percentToSlowDrive);
+      WheelFrontLeft.setPower(v1 * percentToSlowDrive);
+      WheelFrontRight.setPower(v2 * percentToSlowDrive);
+      WheelBackLeft.setPower(v3 * percentToSlowDrive);
+      WheelBackRight.setPower(v4 * percentToSlowDrive);
 
-      telemetry.addData("Wheel Front Left",v1* percentToSlowDrive);
-      telemetry.addData("Wheel Front Right",v2* percentToSlowDrive);
-      telemetry.addData("Wheel Back Left",v3* percentToSlowDrive);
-      telemetry.addData("Wheel Back Right",v4* percentToSlowDrive);
+      telemetry.addData("Wheel Front Left", v1 * percentToSlowDrive);
+      telemetry.addData("Wheel Front Right", v2 * percentToSlowDrive);
+      telemetry.addData("Wheel Back Left", v3 * percentToSlowDrive);
+      telemetry.addData("Wheel Back Right", v4 * percentToSlowDrive);
    }
 
    private void ToggleSlowModeDrive(boolean button) {
       if (button && !buttonSlowDriveIsPressed) {
          buttonSlowDriveIsPressed = true;
          slowModeDriveOn = !slowModeDriveOn;
-      } if (!button) {  buttonSlowDriveIsPressed = false;  }
+      }
+      if (!button) {
+         buttonSlowDriveIsPressed = false;
+      }
 
       if (slowModeDriveOn) {
          percentToSlowDrive = SLOW_DRIVE;
-         telemetry.addData("Drive Mode","Slow: " + percentToSlowDrive + "% Power");
+         telemetry.addData("Drive Mode", "Slow: " + percentToSlowDrive + "% Power");
       } else {
          percentToSlowDrive = FAST_DRIVE;
-         telemetry.addData("Drive Mode","Fast: " + percentToSlowDrive + "% Power");
+         telemetry.addData("Drive Mode", "Fast: " + percentToSlowDrive + "% Power");
       }
    }
 
@@ -253,17 +243,21 @@ public class TeleOpMain extends OpMode {
       if (button && !buttonSineIsPressed) {
          buttonSineIsPressed = true;
          sineDriveOn = !sineDriveOn;
-      } if (!button) {  buttonSineIsPressed = false;  }
+      }
+      if (!button) {
+         buttonSineIsPressed = false;
+      }
 
       if (sineDriveOn) {
-         modifyBySine = Math.sin(Math.PI/4);
-         telemetry.addData("Sine Drive","ON");
+         modifyBySine = Math.sin(Math.PI / 4);
+         telemetry.addData("Sine Drive", "ON");
       } else {
          modifyBySine = 1;
-         telemetry.addData("Sine Drive","OFF");
+         telemetry.addData("Sine Drive", "OFF");
       }
    }
-   private void climbup(){
+
+   private void climbup() {
 
       Climber.setPower(climbpower);
 
@@ -271,7 +265,7 @@ public class TeleOpMain extends OpMode {
    }
 
 
-   private void climbdown(){
+   private void climbdown() {
 
       Climber.setPower(-climbpower);
 
@@ -279,22 +273,23 @@ public class TeleOpMain extends OpMode {
    }
 
 
-   private void climberstop (){
+   private void climberstop() {
 
       Climber.setPower(0);
 
    }
 
-//   private void IntakeForward() {
-//      Intake.setPower(IntakePower);
-//   }
 //
-//   private void IntakeBackward() {
-//      Intake.setPower(-IntakePower);
-//   }
-//   private void IntakeStop() {
-//      Intake.setPower(0);
-//   }
+   private void IntakeForward() {
+      Intake.setPower(IntakePower);
+   }
+
+   private void IntakeBackward() {
+      Intake.setPower(-IntakePower);
+   }
+   private void IntakeStop() {
+      Intake.setPower(0);
+   }
 
 }
 
