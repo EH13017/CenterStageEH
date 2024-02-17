@@ -11,7 +11,7 @@ public class ClawTest extends OpMode {
     Servo Claw2;
     boolean Touch;
     boolean toggle = false;
-    //Test
+
     @Override
     public void init() {
         Claw1 = hardwareMap.servo.get("Claw1");
