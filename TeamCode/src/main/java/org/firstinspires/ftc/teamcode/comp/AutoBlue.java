@@ -42,8 +42,8 @@ public class AutoBlue extends LinearOpMode {
             sleep(500);
             _Drive.StrafeRight(6000,.4);
             sleep(500);
-            _Drive.Intake(IDrive.Direction.FORWARD,4000,.35);
-            sleep(1000);
+//            _Drive.Intake(IDrive.Direction.FORWARD,4000,.35);
+//            sleep(1000);
             //           _Drive.Straight(IDrive.Direction.BACKWARD,6,Power,StopDistance);
 
             // break will exit the loop for us

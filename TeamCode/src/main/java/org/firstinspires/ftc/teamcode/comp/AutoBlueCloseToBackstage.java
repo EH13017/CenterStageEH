@@ -40,8 +40,8 @@ public class AutoBlueCloseToBackstage extends LinearOpMode {
              */
             _Drive.StrafeRight(3000,.4);
             sleep(500);
-            _Drive.Intake(IDrive.Direction.FORWARD,4000,.35);
-            sleep(1000);
+//            _Drive.Intake(IDrive.Direction.FORWARD,4000,.35);
+//            sleep(1000);
             //           _Drive.Straight(IDrive.Direction.BACKWARD,6,Power,StopDistance);
 
             // break will exit the loop for us

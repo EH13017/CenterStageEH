@@ -1,15 +1,10 @@
 package org.firstinspires.ftc.teamcode.comp;
 
-import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
-
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 
 @TeleOp(name = "TeleOp Main", group = "Competition")
@@ -38,6 +33,19 @@ public class TeleOpMain extends OpMode {
    private boolean buttonSineIsPressed = false;
    private double modifyBySine = Math.sin(Math.PI / 4);
 
+   //Arm
+   private DcMotor Slide1;
+   private DcMotor Slide2;
+   private double armPower = 0.5;
+
+   Servo Claw1;
+   Servo Claw2;
+
+   boolean ClawButtonLeft;
+   boolean clawToggle1 = false;
+   boolean ClawButtonRight;
+   boolean clawToggle2 = false;
+
    //Climber
 
    private double climbpower = 1;
@@ -45,8 +53,12 @@ public class TeleOpMain extends OpMode {
 
 //    Intake
    private DcMotor Intake;
-   private double IntakePower = .6;
+   private double IntakePower = .5;
    private boolean IntakeMoving = false;
+
+   //Claw Rotating
+
+   private Servo Crotate;
 
    // REV Blinkin
 //   private RevBlinkinLedDriver LED;
@@ -66,6 +78,16 @@ public class TeleOpMain extends OpMode {
       WheelBackRight = hardwareMap.dcMotor.get("WheelBR");
       Climber = hardwareMap.dcMotor.get("Climber");
       Intake = hardwareMap.dcMotor.get("Intake");
+      Slide1 = hardwareMap.get(DcMotor.class, "Slide1");
+      Slide2 = hardwareMap.get(DcMotor.class, "Slide2");
+      Crotate = hardwareMap.servo.get("Crotate");
+      Crotate.setPosition(0);
+      Claw1 = hardwareMap.servo.get("Claw1");
+      Claw1.setDirection(Servo.Direction.FORWARD);
+      Claw1.setPosition(0.46);
+      Claw2 = hardwareMap.servo.get("Claw2");
+      Claw2.setDirection(Servo.Direction.REVERSE);
+      Claw2.setPosition(0.46);
 
       WheelFrontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
       WheelFrontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -109,6 +131,10 @@ public class TeleOpMain extends OpMode {
       telemetry.update();
 
    }
+
+
+   boolean firstTimeLeft = true;
+   boolean firstTimeRight = true;
 
    @Override
    public void loop() {
@@ -160,6 +186,55 @@ public class TeleOpMain extends OpMode {
          climberstop();
          isclimbing = false;
       }
+
+      // Moving Arm up and down
+      if (twoPadUp) {
+         slidesUp(armPower);
+      }
+      else if (twoPadDown) {
+         slidesDown(armPower);
+      }
+      else {
+         slidesStop();
+      }
+
+      //Claw
+      ClawButtonLeft = gamepad2.dpad_left;
+
+
+      if (ClawButtonLeft == false && firstTimeLeft == false){
+         firstTimeLeft = true;
+      }
+
+      if (ClawButtonLeft && firstTimeLeft){
+         firstTimeLeft = false;
+         clawToggle1 = !clawToggle1;
+         if (clawToggle1){
+            Claw1.setPosition(0.46);
+         } else {
+            Claw1.setPosition(0);
+         }
+      }
+
+      ClawButtonRight = gamepad2.dpad_right;
+
+
+      if (ClawButtonRight == false && firstTimeRight == false){
+         firstTimeRight = true;
+      }
+
+      if (ClawButtonRight && firstTimeRight){
+         firstTimeRight = false;
+         clawToggle2 = !clawToggle2;
+         if (clawToggle2){
+            Claw2.setPosition(0.46);
+         } else {
+            Claw2.setPosition(0);
+         }
+      }
+
+      telemetry.addData("Claw1", Claw1.getPosition());
+      telemetry.addData("Claw2", Claw2.getPosition());
 //
       //Intake
       if (twoButtonX && IntakeMoving == false){ // Moves intake forward
@@ -186,6 +261,18 @@ public class TeleOpMain extends OpMode {
       ToggleSlowModeDrive(oneButtonA);
 
       telemetry.update();
+
+      //CLAW ROTATOR
+      if (twoBumperLeft) {
+         Crotate.setPosition(-1);
+      }
+      else if (twoBumperRight) {
+         Crotate.setPosition(1);
+      }
+      else {
+         Crotate.setPosition(0.5);
+      }
+
    }
 
 
@@ -279,6 +366,23 @@ public class TeleOpMain extends OpMode {
       Climber.setPower(0);
 
    }
+
+   //Arm
+   public void slidesUp(double power) {
+      Slide1.setPower(power);
+      Slide2.setPower(power);
+   }
+
+   public void slidesDown(double power) {
+      Slide1.setPower(-power);
+      Slide2.setPower(-power);
+   }
+
+   public void slidesStop() {
+      Slide1.setPower(0);
+      Slide2.setPower(0);
+   }
+
 
 //
    private void IntakeForward() {
