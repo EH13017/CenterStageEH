@@ -19,6 +19,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 
 @TeleOp
+@Disabled
 public class FieldCentricMecanumTeleOp extends LinearOpMode {
 
    public ModernRoboticsI2cGyro modernRoboticsI2cGyro;
