@@ -85,6 +85,7 @@ public class TeleOpMain extends OpMode {
               RevHubOrientationOnRobot.UsbFacingDirection.FORWARD));
       // Without this, the REV Hub's orientation is assumed to be logo up / USB forward
       imu.initialize(parameters);
+      imu.resetYaw();
 
       WheelFrontLeft = hardwareMap.dcMotor.get("WheelFL");
       WheelFrontRight = hardwareMap.dcMotor.get("WheelFR");
@@ -160,6 +161,7 @@ public class TeleOpMain extends OpMode {
       double oneRightStickXPower = gamepad1.right_stick_x;
       boolean oneButtonA = gamepad1.a;
       boolean oneButtonB = gamepad1.b;
+      boolean oneStart = gamepad1.start;
 
       // Gamepad 2
       boolean twoButtonA = gamepad2.a;
@@ -265,7 +267,8 @@ public class TeleOpMain extends OpMode {
 //      manageLEDColors();
 
       // Drive Controls
-      ProMotorControl(oneLeftStickYPower, oneLeftStickXPower, oneRightStickXPower);
+      if (oneStart) {imu.resetYaw();}
+      fieldCentric(oneLeftStickYPower, oneLeftStickXPower, oneRightStickXPower);
       ToggleSineDrive(oneButtonB);
 
       // Slow Controls
@@ -300,40 +303,13 @@ public class TeleOpMain extends OpMode {
       double powerLeftX = -left_stick_x * -1; // STRAFE:     Left -1 <---> 1 Right
       double powerRightX = right_stick_x; // ROTATE:     Left -1 <---> 1 Right
 
-
-
-      double y = -gamepad1.left_stick_y; // Remember, Y stick value is reversed
-      double x = gamepad1.left_stick_x;
-      double rx = gamepad1.right_stick_x;
-
-      double botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
-      double rotX = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
-      double rotY = x * Math.sin(-botHeading) + y * Math.cos(-botHeading);
-
-      rotX = rotX * 1.1;  // Counteract imperfect strafing
-
-      double denominator = Math.max(Math.abs(rotY) + Math.abs(rotX) + Math.abs(rx), 1);
-
+      double r = Math.hypot(powerLeftX, powerLeftY);
+      double robotAngle = Math.atan2(powerLeftY, powerLeftX) - Math.PI / 4;
       double leftX = powerRightX;
-      double frontLeftPower = (rotY + rotX + rx) / denominator + leftX;
-      double backLeftPower = (rotY - rotX + rx) / denominator - leftX;
-      double frontRightPower = (rotY - rotX - rx) / denominator + leftX;
-      double backRightPower = (rotY + rotX - rx) / denominator - leftX;
-
-
-
-//      double r = Math.hypot(powerLeftX, powerLeftY);
-//      double robotAngle = Math.atan2(powerLeftY, powerLeftX) - Math.PI / 4;
-
-//      final double v1 = r * Math.cos(robotAngle) / modifyBySine + leftX;
-//      final double v2 = r * Math.sin(robotAngle) / modifyBySine - leftX;
-//      final double v3 = r * Math.sin(robotAngle) / modifyBySine + leftX;
-//      final double v4 = r * Math.cos(robotAngle) / modifyBySine - leftX;
-
-      final double v1 = frontLeftPower / modifyBySine;
-      final double v2 = backLeftPower / modifyBySine;
-      final double v3 = frontRightPower / modifyBySine;
-      final double v4 = backRightPower / modifyBySine;
+      final double v1 = r * Math.cos(robotAngle) / modifyBySine + leftX;
+      final double v2 = r * Math.sin(robotAngle) / modifyBySine - leftX;
+      final double v3 = r * Math.sin(robotAngle) / modifyBySine + leftX;
+      final double v4 = r * Math.cos(robotAngle) / modifyBySine - leftX;
 
       WheelFrontLeft.setPower(v1 * percentToSlowDrive);
       WheelFrontRight.setPower(v2 * percentToSlowDrive);
@@ -345,6 +321,53 @@ public class TeleOpMain extends OpMode {
       telemetry.addData("Wheel Back Left", v3 * percentToSlowDrive);
       telemetry.addData("Wheel Back Right", v4 * percentToSlowDrive);
    }
+
+   private void PowerMotorControl(double FL,double BL, double FR, double BR){
+      final double v1 = FL / modifyBySine;
+      final double v2 = BL / modifyBySine;
+      final double v3 = FR / modifyBySine;
+      final double v4 = BR / modifyBySine;
+
+      WheelFrontLeft.setPower(v1 * percentToSlowDrive);
+      WheelFrontRight.setPower(v2 * percentToSlowDrive);
+      WheelBackLeft.setPower(v3 * percentToSlowDrive);
+      WheelBackRight.setPower(v4 * percentToSlowDrive);
+
+      telemetry.addData("Wheel Front Left", v1 * percentToSlowDrive);
+      telemetry.addData("Wheel Front Right", v2 * percentToSlowDrive);
+      telemetry.addData("Wheel Back Left", v3 * percentToSlowDrive);
+      telemetry.addData("Wheel Back Right", v4 * percentToSlowDrive);
+   }
+
+   private void fieldCentric(double left_stick_y, double left_stick_x, double right_stick_x) {
+      double y = left_stick_y;   // DRIVE : Backward -1 <---> 1 Forward
+      double x = left_stick_x;   // STRAFE:     Left -1 <---> 1 Right
+      double rx = right_stick_x; // ROTATE:     Left -1 <---> 1 Right
+
+      double botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
+
+      // Rotate the movement direction counter to the bot's rotation
+      double rotX = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
+      double rotY = x * Math.sin(-botHeading) + y * Math.cos(-botHeading);
+
+      rotX = rotX * 1.1;  // Counteract imperfect strafing
+
+      // Denominator is the largest motor power (absolute value) or 1
+      // This ensures all the powers maintain the same ratio,
+      // but only if at least one is out of the range [-1, 1]
+      double denominator = Math.max(Math.abs(rotY) + Math.abs(rotX) + Math.abs(rx), 1);
+      double frontLeftPower = (rotY + rotX + rx) / denominator;
+      double backLeftPower = (rotY - rotX - rx) / denominator;
+      double frontRightPower = (rotY - rotX + rx) / denominator;
+      double backRightPower = (rotY + rotX - rx) / denominator;
+
+      PowerMotorControl(frontLeftPower, backLeftPower, frontRightPower, backRightPower);
+
+      telemetry.addData("rotX", rotX);
+      telemetry.addData("rotY", rotY);
+      telemetry.addData("angle", botHeading);
+   }
+
 
    private void ToggleSlowModeDrive(boolean button) {
       if (button && !buttonSlowDriveIsPressed) {
@@ -422,7 +445,7 @@ public class TeleOpMain extends OpMode {
    }
 
 
-   //
+//
    private void IntakeForward() {
       Intake.setPower(IntakePower);
    }
