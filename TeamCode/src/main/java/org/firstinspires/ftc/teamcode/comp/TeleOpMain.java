@@ -9,14 +9,17 @@ import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.teamcode.Adam.RevBlinkinLedDriver;
+
+import java.util.concurrent.TimeUnit;
 
 
 @TeleOp(name = "TeleOp Main", group = "Competition")
 public class TeleOpMain extends OpMode {
-
    /*
     * Declare Hardware
     */
+
    //IMU
    private IMU imu;
 
@@ -52,6 +55,9 @@ public class TeleOpMain extends OpMode {
    boolean ClawButtonRight;
    boolean clawToggle2 = false;
 
+   //Drone
+   private Servo Drone;
+
    //Climber
 
    private double climbpower = 1;
@@ -66,13 +72,14 @@ public class TeleOpMain extends OpMode {
 
    private Servo Crotate;
 
-   // REV Blinkin
-//   private RevBlinkinLedDriver LED;
+   //REV Blinkin
+   RevBlinkinLedDriver blinkinLedDriver;
 
 
 
    @Override
    public void init() {
+      resetRuntime();
 
       // Initialize Wheels
       telemetry.addData("I", "Initializing Wheels");
@@ -100,6 +107,8 @@ public class TeleOpMain extends OpMode {
       Claw1.setDirection(Servo.Direction.FORWARD);
       Claw2 = hardwareMap.servo.get("Claw2");
       Claw2.setDirection(Servo.Direction.REVERSE);
+      Drone = hardwareMap.servo.get("Drone");
+      Drone.setPosition(0);
 
       WheelFrontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
       WheelFrontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -130,18 +139,13 @@ public class TeleOpMain extends OpMode {
       Intake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
 
-//      // Initialize REV Blinkin
-//      telemetry.addData("I", "Initializing Blinkin");
-//      telemetry.update();
-//
-//      LED = hardwareMap.get(RevBlinkinLedDriver.class, "LED");
-//      setLEDPattern(RevBlinkinLedDriver.BlinkinPattern.GREEN);
+      // Initialize REV Blinkin
+      blinkinLedDriver = hardwareMap.get(RevBlinkinLedDriver.class, "Light");
 
 
       // Let the user know initialization is complete.
       telemetry.addData("I", "Initialization Complete! :D");
       telemetry.update();
-
    }
 
 
@@ -182,6 +186,18 @@ public class TeleOpMain extends OpMode {
       /*
        * Do Stuff Here!
        */
+
+      //Red at end
+      long runtime = (long) getRuntime();
+      telemetry.addData("Runtime", runtime);
+      if (runtime >= TimeUnit.MINUTES.toSeconds(1)+30) {
+         blinkinLedDriver.setPWM(0.6525);
+      }
+
+      //Shoot Drone
+      if (twoStart & twoStart) {
+         Drone.setPosition(90);
+      }
 
       // Moving Climber up and down
       if (twoButtonB && isclimbing == false) { // Button B moves Climber up.
