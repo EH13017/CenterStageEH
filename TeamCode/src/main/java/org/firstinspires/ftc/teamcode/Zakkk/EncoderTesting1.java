@@ -8,8 +8,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 
 
-@TeleOp(name = "Encoder Testing", group = "Competition")
-public class EncoderTesting extends OpMode {
+@TeleOp(name = "Encoder Testing 1", group = "Competition")
+public class EncoderTesting1 extends OpMode {
 
    /*
     * Declare Hardware
@@ -72,14 +72,13 @@ public class EncoderTesting extends OpMode {
    // For example, use a value of 2.0 for a 12-tooth spur gear driving a 24-tooth spur gear.
    // This is gearing DOWN for less speed and more torque.
    // For gearing UP, use a gear ratio less than 1.0. Note this will affect the direction of wheel rotation.
-   static final double     COUNTS_PER_MOTOR_REV    = 1440 ;    // eg: TETRIX Motor Encoder
-   static final double     DRIVE_GEAR_REDUCTION    = 1.0 ;     // No External Gearing.
-   static final double     WHEEL_DIAMETER_INCHES   = 4.0 ;     // For figuring circumference
-   static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
+   static final double COUNTS_PER_MOTOR_REV = 1440;    // eg: TETRIX Motor Encoder
+   static final double DRIVE_GEAR_REDUCTION = 1.0;     // No External Gearing.
+   static final double WHEEL_DIAMETER_INCHES = 4.0;     // For figuring circumference
+   static final double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
            (WHEEL_DIAMETER_INCHES * 3.1415);
-   static final double     DRIVE_SPEED             = 0.6;
-   static final double     TURN_SPEED              = 0.5;
-
+   static final double DRIVE_SPEED = 0.6;
+   static final double TURN_SPEED = 0.5;
 
 
    @Override
@@ -144,11 +143,10 @@ public class EncoderTesting extends OpMode {
    boolean firstTimeLeft = true;
    boolean firstTimeRight = true;
    boolean FirstTime = true;
-
-   boolean FirstTime2 = true;
-   boolean IsSlideMoving = false;
    int Slide1Zero = 0;
    int Slide2Zero = 0;
+   int Slide1GoTo = 0;
+   int Slide2GoTo = 0;
 
    @Override
    public void loop() {
@@ -196,73 +194,50 @@ public class EncoderTesting extends OpMode {
          telemetry.addData("Slide2 mlimit is true", Slide2.getCurrentPosition());
       }
 
-      if (Mlimit.isPressed() && FirstTime) {
-         FirstTime = false;
+      if (Mlimit.isPressed()) {
+//         telemetry.addData("","mlimit is pressed?");
          Slide1Zero = Slide1.getCurrentPosition();
          Slide2Zero = Slide2.getCurrentPosition();
+//      } else {
+//         telemetry.addData("","mlimit is NOT pressed?");
+      }
+      telemetry.update();
+
+      if (gamepad2.x) {
+         Slide1.setTargetPosition(Slide1Zero);
+         Slide2.setTargetPosition(Slide2Zero);
       }
 
-      if (gamepad2.x){
-         telemetry.addData("X button pressed?", gamepad2.x);
-      } else {
-         telemetry.addData("X button pressed?", gamepad2.x);
-      }
-      if (gamepad2.x){
-         FirstTime2 = true;
-      }
 
-      if (FirstTime2) {
-         FirstTime2 = false;
-//         Slide1.setTargetPosition(Slide1Zero);
-//         Slide2.setTargetPosition(Slide2Zero);
-//         telemetry.addLine("Slides 1&2 target set");
-         Slide1.setPower(-0.4);
-         Slide2.setPower(-0.4);
-         IsSlideMoving = true;
+         int PerfectPositionS1 = Slide1.getCurrentPosition() - Slide1Zero;
+         int PerfectPositionS2 = Slide2.getCurrentPosition() - Slide2Zero;
+         telemetry.addData("Claw perfect position S1",PerfectPositionS1);
+         telemetry.addData("Claw perfect position S2",PerfectPositionS2);
+//         telemetry.addData("DifferenceS1",Slide1Zero);
+//         telemetry.addData("DifferenceS2",Slide2Zero);
          telemetry.update();
-      } else{
-         telemetry.addLine("At zero position");
-      }
-
-      if (IsSlideMoving) {
-         if (Slide1.getCurrentPosition() <= Slide1Zero) {
-
-            FirstTime2 = false;
-            IsSlideMoving = false;
-            Slide1.setPower(0);
-            Slide2.setPower(0);
-         }
-      }
-
-
-
-
-
 
       // Moving Arm up and down
-      if (IsSlideMoving == false || gamepad2.dpad_up || gamepad2.dpad_down) {
-         IsSlideMoving = false;
-         if (twoPadUp) {
-            slidesUp(armPower);
-         } else if (twoPadDown) {
-            slidesDown(armPower);
-         } else {
-            slidesStop();
-         }
+      if (twoPadUp) {
+         slidesUp(armPower);
+      } else if (twoPadDown) {
+         slidesDown(armPower);
+      } else {
+         slidesStop();
       }
 
       //Claw
       ClawButtonLeft = gamepad2.dpad_left;
 
 
-      if (ClawButtonLeft == false && firstTimeLeft == false){
+      if (ClawButtonLeft == false && firstTimeLeft == false) {
          firstTimeLeft = true;
       }
 
-      if (ClawButtonLeft && firstTimeLeft){
+      if (ClawButtonLeft && firstTimeLeft) {
          firstTimeLeft = false;
          clawToggle1 = !clawToggle1;
-         if (clawToggle1){
+         if (clawToggle1) {
             Claw1.setPosition(0.46);
          } else {
             Claw1.setPosition(0);
@@ -272,21 +247,19 @@ public class EncoderTesting extends OpMode {
       ClawButtonRight = gamepad2.dpad_right;
 
 
-      if (ClawButtonRight == false && firstTimeRight == false){
+      if (ClawButtonRight == false && firstTimeRight == false) {
          firstTimeRight = true;
       }
 
-      if (ClawButtonRight && firstTimeRight){
+      if (ClawButtonRight && firstTimeRight) {
          firstTimeRight = false;
          clawToggle2 = !clawToggle2;
-         if (clawToggle2){
+         if (clawToggle2) {
             Claw2.setPosition(0.46);
          } else {
             Claw2.setPosition(0);
          }
       }
-
-
 
 
       // Drive Controls
@@ -299,14 +272,13 @@ public class EncoderTesting extends OpMode {
       telemetry.update();
 
       //CLAW ROTATOR
-         if (twoBumperLeft) {
-            Crotate.setPosition(-1);
-         } else if (twoBumperRight) {
-            Crotate.setPosition(1);
-         } else {
-            Crotate.setPosition(0.5);
-         }
-
+      if (twoBumperLeft) {
+         Crotate.setPosition(-1);
+      } else if (twoBumperRight) {
+         Crotate.setPosition(1);
+      } else {
+         Crotate.setPosition(0.5);
+      }
 
    }
 
