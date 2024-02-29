@@ -279,8 +279,7 @@ public class TeleOpMain extends OpMode {
          IntakeStop();
          IntakeMoving = false;
       }
-//      // LEDs
-//      manageLEDColors();
+
 
       // Drive Controls
       if (oneStart) {imu.resetYaw();}
@@ -426,7 +425,6 @@ public class TeleOpMain extends OpMode {
 
       Climber.setPower(climbpower);
 
-//        telemetry.addData("Climber",.2);
    }
 
 
@@ -434,7 +432,6 @@ public class TeleOpMain extends OpMode {
 
       Climber.setPower(-climbpower);
 
-//        telemetry.addData("Climber",-.2);
    }
 
 
@@ -476,31 +473,3 @@ public class TeleOpMain extends OpMode {
 }
 
 
-//hiii
-//   // Here is a file to show how to use the REV Blinkin, along with a complete list of colors:
-//   // https://www.revrobotics.com/content/docs/REV-11-1105-UM.pdf
-//   protected void setLEDPattern(RevBlinkinLedDriver.BlinkinPattern setPattern) {
-//      LED.setPattern(setPattern);
-//   }
-//
-//   protected void turnOffLEDPattern() {
-//      LED.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLACK);
-//   }
-//
-//   private void manageLEDColors() {
-//      if (heightLift == GROUND) {
-//         setLEDPattern(RevBlinkinLedDriver.BlinkinPattern.GREEN);
-//      }
-//      else if (heightLift == LOW) {
-//         setLEDPattern(RevBlinkinLedDriver.BlinkinPattern.RED);
-//      }
-//      else if (heightLift == MEDIUM) {
-//         setLEDPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE);
-//      }
-//      else if (heightLift == HIGH) {
-//         setLEDPattern(RevBlinkinLedDriver.BlinkinPattern.YELLOW);
-//      }
-//      else {
-//         turnOffLEDPattern();
-//      }
-//   }
