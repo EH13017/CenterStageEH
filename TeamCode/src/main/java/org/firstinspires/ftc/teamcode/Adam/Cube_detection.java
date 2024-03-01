@@ -11,8 +11,9 @@ import org.opencv.core.Point;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.core.Rect;
+import org.openftc.easyopencv.OpenCvPipeline;
 
-public class Cube_detection implements VisionProcessor {
+public class Cube_detection extends OpenCvPipeline {
 
     /*
      * These are our variables that will be
@@ -59,6 +60,11 @@ public class Cube_detection implements VisionProcessor {
 
     private Telemetry telemetry = null;
 
+    @Override
+    public Mat processFrame(Mat input) {
+        return null;
+    }
+
     /**
      * Enum to choose which color space to choose
      * with the live variable tuner isntead of
@@ -87,7 +93,7 @@ public class Cube_detection implements VisionProcessor {
     public Cube_detection(Telemetry telemetry) {
         this.telemetry = telemetry;
     }
-
+/*
     @Override
     public void init(int width, int height, CameraCalibration calibration) {
     }
@@ -104,7 +110,7 @@ public class Cube_detection implements VisionProcessor {
             upper = new Scalar(255, 150, 48);
         }
 
-        /*
+        *//*
          * Converts our input mat from RGB to
          * specified color space by the enum.
          * EOCV ALWAYS returns RGB mats, so you'd
@@ -113,10 +119,10 @@ public class Cube_detection implements VisionProcessor {
          *
          * Takes our "input" mat as an input, and outputs
          * to a separate Mat buffer "ycrcbMat"
-         */
+         *//*
         Imgproc.cvtColor(frame, ycrcbMat, colorSpace.cvtCode);
 
-        /*
+        *//*
          * This is where our thresholding actually happens.
          * Takes our "ycrcbMat" as input and outputs a "binary"
          * Mat to "binaryMat" of the same size as our input.
@@ -129,39 +135,39 @@ public class Cube_detection implements VisionProcessor {
          *
          * 0 represents our pixels that were outside the bounds
          * 255 represents our pixels that are inside the bounds
-         */
+         *//*
 
 
         Core.inRange(ycrcbMat, lower, upper, binaryMat);
 
-        /*
+        *//*
          * Release the reusable Mat so that old data doesn't
          * affect the next step in the current processing
-         */
+         *//*
         maskedInputMat.release();
 
-        /*
+        *//*
          * Now, with our binary Mat, we perform a "bitwise and"
          * to our input image, meaning that we will perform a mask
          * which will include the pixels from our input Mat which
          * are "255" in our binary Mat (meaning that they're inside
          * the range) and will discard any other pixel outside the
          * range (RGB 0, 0, 0. All discarded pixels will be black)
-         */
+         *//*
 
         Core.bitwise_and(frame, frame, maskedInputMat, binaryMat);
 
-        /**
+        *//**
          * Add some nice and informative telemetry messages
-         */
+         *//*
 
-        /*
+        *//*
          * Different from OpenCvPipeline, you cannot return
          * a Mat from processFrame. Therefore, we will take
          * advantage of the fact that anything drawn onto the
          * passed `frame` object will be displayed on the
          * viewport. We will just return null here.
-         */
+         *//*
         maskedInputMat.copyTo(frame);
 
         Point p1 = new Point(0, 0);
@@ -208,7 +214,7 @@ public class Cube_detection implements VisionProcessor {
         telemetry.update();
 
         return null;
-    }
+    }*/
 
     public String getHighValue(Mat frame) {
         if (color == 0) {
@@ -263,7 +269,4 @@ public class Cube_detection implements VisionProcessor {
         return null;
     }
 
-    @Override
-    public void onDrawFrame(Canvas canvas, int onscreenWidth, int onscreenHeight, float scaleBmpPxToCanvasPx, float scaleCanvasDensity, Object userContext) {
-    }
 }
