@@ -18,6 +18,8 @@ import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+
 import java.util.concurrent.atomic.AtomicBoolean;
 
 @Autonomous(name = "AutoRed", group = "competition")
@@ -87,7 +89,7 @@ public class AutoRed extends LinearOpMode {
                         2, //The number of sub-containers to create
                         OpenCvCameraFactory.ViewportSplitMethod.HORIZONTALLY);
 
-        //frontCVCCamera = OpenCvCameraFactory.getInstance().createWebcam(RobotHardwareMap.frontCamera, viewportContainerIds[1]);
+        //frontCVCCamera = OpenCvCameraFactory.getInstance().createWebcam(RobotHardwareMap, viewportContainerIds[1]);
         frontCVCCamera.showFpsMeterOnViewport(false);
 
         frontCameraIsFaulty.set(false);
