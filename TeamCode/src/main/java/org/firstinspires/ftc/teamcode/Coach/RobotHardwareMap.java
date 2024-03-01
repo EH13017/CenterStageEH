@@ -52,7 +52,7 @@ public class RobotHardwareMap {
 
    private final int baseResolution_x = 320;
    private final int baseResolution_y = 240;
-   WebcamName frontCamera;
+   public WebcamName frontCamera;
    //WebcamName backCamera;
 
    boolean controlHubBatteryVoltageEnabled = true;
