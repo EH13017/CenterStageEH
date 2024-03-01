@@ -87,7 +87,7 @@ public class AutoRed extends LinearOpMode {
                         2, //The number of sub-containers to create
                         OpenCvCameraFactory.ViewportSplitMethod.HORIZONTALLY);
 
-        frontCVCCamera = OpenCvCameraFactory.getInstance().createWebcam(RobotHardwareMap.frontCamera, viewportContainerIds[1]);
+        //frontCVCCamera = OpenCvCameraFactory.getInstance().createWebcam(RobotHardwareMap.frontCamera, viewportContainerIds[1]);
         frontCVCCamera.showFpsMeterOnViewport(false);
 
         frontCameraIsFaulty.set(false);

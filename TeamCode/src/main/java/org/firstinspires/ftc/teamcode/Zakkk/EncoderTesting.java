@@ -96,7 +96,7 @@ public class EncoderTesting extends OpMode {
       Slide1 = hardwareMap.dcMotor.get("Slide1");
       Slide2 = hardwareMap.dcMotor.get("Slide2");
       Crotate = hardwareMap.servo.get("Crotate");
-      Crotate.setPosition(0);
+      Crotate.setPosition(0.1);
       Claw1 = hardwareMap.servo.get("Claw1");
       Claw1.setDirection(Servo.Direction.FORWARD);
       Claw1.setPosition(0.46);
@@ -165,6 +165,9 @@ public class EncoderTesting extends OpMode {
       boolean oneButtonB = gamepad1.b;
 
       // Gamepad 2
+      double twoLeftStickYPower = -gamepad2.left_stick_y;
+      double twoLeftStickXPower = gamepad2.left_stick_x;
+      double twoRightStickXPower = gamepad2.right_stick_x;
       boolean twoButtonA = gamepad2.a;
       boolean twoButtonB = gamepad2.b;
       boolean twoButtonX = gamepad2.x;
@@ -187,6 +190,7 @@ public class EncoderTesting extends OpMode {
 
       telemetry.addData("Claw1", Claw1.getPosition());
       telemetry.addData("Claw2", Claw2.getPosition());
+      telemetry.addData("Claw Rotate", Crotate.getPosition());
       telemetry.addData("Slide1 current position", Slide1.getCurrentPosition());
       telemetry.addData("Slide2 current position", Slide2.getCurrentPosition());
 
@@ -203,19 +207,14 @@ public class EncoderTesting extends OpMode {
       }
 
       if (gamepad2.x){
+         FirstTime2 = true;
          telemetry.addData("X button pressed?", gamepad2.x);
       } else {
          telemetry.addData("X button pressed?", gamepad2.x);
       }
-      if (gamepad2.x){
-         FirstTime2 = true;
-      }
 
       if (FirstTime2) {
          FirstTime2 = false;
-//         Slide1.setTargetPosition(Slide1Zero);
-//         Slide2.setTargetPosition(Slide2Zero);
-//         telemetry.addLine("Slides 1&2 target set");
          Slide1.setPower(-0.4);
          Slide2.setPower(-0.4);
          IsSlideMoving = true;
@@ -255,7 +254,7 @@ public class EncoderTesting extends OpMode {
       ClawButtonLeft = gamepad2.dpad_left;
 
 
-      if (ClawButtonLeft == false && firstTimeLeft == false){
+      if (ClawButtonLeft == false && firstTimeLeft == false || gamepad2.y){
          firstTimeLeft = true;
       }
 
@@ -272,7 +271,7 @@ public class EncoderTesting extends OpMode {
       ClawButtonRight = gamepad2.dpad_right;
 
 
-      if (ClawButtonRight == false && firstTimeRight == false){
+      if (ClawButtonRight == false && firstTimeRight == false || gamepad2.y){
          firstTimeRight = true;
       }
 
@@ -306,6 +305,13 @@ public class EncoderTesting extends OpMode {
          } else {
             Crotate.setPosition(0.5);
          }
+
+      if (gamepad2.a) {
+         Crotate.setPosition(1);
+      }
+      if (gamepad2.b) {
+         Crotate.setPosition(0.2);
+      }
 
 
    }

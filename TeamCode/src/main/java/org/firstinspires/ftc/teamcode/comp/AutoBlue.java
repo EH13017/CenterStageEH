@@ -15,7 +15,7 @@ public class AutoBlue extends LinearOpMode {
 
     private IDrive _Drive;
     public static double DriveDistance = 24;
-    public static double Power = .25;
+    public static double Power = .4;
     public static double StopDistance = 10;
 
     @Override

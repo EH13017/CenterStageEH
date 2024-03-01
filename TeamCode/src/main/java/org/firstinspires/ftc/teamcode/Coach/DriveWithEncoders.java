@@ -98,8 +98,8 @@ public class DriveWithEncoders implements IDrive {
         _Intake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         // Initialize Encoders
-        _OdometerLeft = hardwareMap.dcMotor.get("Climber");
-        _OdometerRight = hardwareMap.dcMotor.get("WheelFR");
+        _OdometerLeft = hardwareMap.dcMotor.get("WheelFR");
+        _OdometerRight = hardwareMap.dcMotor.get("WheelFL");
 
         _OdometerLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         _OdometerRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -107,11 +107,11 @@ public class DriveWithEncoders implements IDrive {
         _OdometerLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         _OdometerRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-//        _OdometerLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-//        _OdometerRight.setDirection(DcMotorSimple.Direction.FORWARD);
-
-        _OdometerLeft.setDirection(DcMotorSimple.Direction.FORWARD);
-        _OdometerRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        _OdometerLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        _OdometerRight.setDirection(DcMotorSimple.Direction.FORWARD);
+//
+//        _OdometerLeft.setDirection(DcMotorSimple.Direction.FORWARD);
+//        _OdometerRight.setDirection(DcMotorSimple.Direction.REVERSE);
         // Initialize PID
 
         /* Set PID proportional value to start reducing power at about 50 degrees of rotation.
