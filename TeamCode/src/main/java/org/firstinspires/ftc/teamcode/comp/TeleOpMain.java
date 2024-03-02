@@ -12,8 +12,6 @@ import com.qualcomm.robotcore.hardware.TouchSensor;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.Adam.RevBlinkinLedDriver;
 
-import java.util.concurrent.TimeUnit;
-
 
 @TeleOp(name = "TeleOp Main", group = "Competition")
 public class TeleOpMain extends OpMode {
@@ -199,15 +197,8 @@ public class TeleOpMain extends OpMode {
        * Do Stuff Here!
        */
 
-      //Red at end
-      long runtime = (long) getRuntime();
-      telemetry.addData("Runtime", runtime);
-      if (runtime >= TimeUnit.MINUTES.toSeconds(1)+30) {
-         blinkinLedDriver.setPWM(0.6525);
-      }
-
       //Shoot Drone
-      if (gamepad2.right_stick_button) {
+      if (twoStart) {
          Drone.setPosition(90);
       }
 
@@ -313,19 +304,23 @@ public class TeleOpMain extends OpMode {
       telemetry.addData("Claw2", Claw2.getPosition());
 //
       //Intake
-      if (twoButtonX && IntakeMoving == false){ // Moves intake forward
-         IntakeForward();
-         IntakeMoving = true;
-      } else if (twoButtonY && IntakeMoving == false) { // Moves intake backwards
-         IntakeBackward();
-         IntakeMoving = true;
-      } else if (IntakeMoving && (twoButtonX || twoButtonY)) {
-         //do nothing while climbing
+      double intake_pow = ((double) twoTriggerLeft*IntakePower) - ((double) twoTriggerRight*IntakePower);
+      telemetry.addData("Intake power", intake_pow);
+      Intake.setPower(intake_pow);
 
-      } else { // Stops intake
-         IntakeStop();
-         IntakeMoving = false;
-      }
+//      if (twoButtonX && IntakeMoving == false){ // Moves intake forward
+//         IntakeForward();
+//         IntakeMoving = true;
+//      } else if (twoButtonY && IntakeMoving == false) { // Moves intake backwards
+//         IntakeBackward();
+//         IntakeMoving = true;
+//      } else if (IntakeMoving && (twoButtonX || twoButtonY)) {
+//         //do nothing while climbing
+//
+//      } else { // Stops intake
+//         IntakeStop();
+//         IntakeMoving = false;
+//      }
 
 
       // Drive Controls
@@ -361,9 +356,9 @@ public class TeleOpMain extends OpMode {
    // Get the inputs from the controller for power [ PRO ]
    //******************************************************************
    private void ProMotorControl(double left_stick_y, double left_stick_x, double right_stick_x) {
-      double powerLeftY = left_stick_y;   // DRIVE : Backward -1 <---> 1 Forward
-      double powerLeftX = -left_stick_x * -1; // STRAFE:     Left -1 <---> 1 Right
-      double powerRightX = right_stick_x; // ROTATE:     Left -1 <---> 1 Right
+      double powerLeftY = left_stick_y * -1;   // DRIVE : Backward -1 <---> 1 Forward
+      double powerLeftX = left_stick_x * 1; // STRAFE:     Left -1 <---> 1 Right
+      double powerRightX = right_stick_x * -1; // ROTATE:     Left -1 <---> 1 Right
 
       double r = Math.hypot(powerLeftX, powerLeftY);
       double robotAngle = Math.atan2(powerLeftY, powerLeftX) - Math.PI / 4;
@@ -402,9 +397,9 @@ public class TeleOpMain extends OpMode {
    }
 
    private void fieldCentric(double left_stick_y, double left_stick_x, double right_stick_x) {
-      double y = left_stick_y;   // DRIVE : Backward -1 <---> 1 Forward
-      double x = left_stick_x;   // STRAFE:     Left -1 <---> 1 Right
-      double rx = right_stick_x; // ROTATE:     Left -1 <---> 1 Right
+      double y = -left_stick_y;   // DRIVE : Backward -1 <---> 1 Forward
+      double x = -left_stick_x;   // STRAFE:     Left -1 <---> 1 Right
+      double rx = -right_stick_x; // ROTATE:     Left -1 <---> 1 Right
 
       double botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
 
