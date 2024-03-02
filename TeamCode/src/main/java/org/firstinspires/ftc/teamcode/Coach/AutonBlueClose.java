@@ -12,8 +12,8 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 @Autonomous(name = "Auton Blue Close To Backstage", group = "Autons")
 public class AutonBlueClose extends AutonBase {
 
-   private int     parkingPosition= -1;
-   private int     lastParkingPosition = -1;
+   private int parkingPosition= -1;
+   private int lastParkingPosition = -1;
    @Override
    public void runOpMode(){
 
