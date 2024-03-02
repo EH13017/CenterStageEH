@@ -1,9 +1,11 @@
-package org.firstinspires.ftc.teamcode.Coach;
+package org.firstinspires.ftc.teamcode.Charlie;
 
 import android.util.Log;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+import org.firstinspires.ftc.teamcode.Coach.RobotHardwareMap;
+import org.firstinspires.ftc.teamcode.Coach.SpikeLocationDetectionPipeline;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
@@ -19,14 +21,14 @@ public class RobotCameraHandler {
 
    public OpenCvCamera parkingCVCamera;
    public OpenCvCamera frontCVCCamera;
-   public SpikeLocationDetectionPipeline spikeLocationDetectionPipeline;
+   SpikeLocationDetectionPipeline spikeLocationDetectionPipeline;
    public AtomicBoolean parkingCameraIsOpen = new AtomicBoolean(false);
    public AtomicBoolean parkingCameraIsFaulty = new AtomicBoolean(false);
    public AtomicBoolean frontCameraIsOpen = new AtomicBoolean(false);
    public AtomicBoolean frontCameraIsFaulty = new AtomicBoolean(false);
    final boolean enableParkingCamera = false;
    final boolean showParkingCameraStream = false;
-   public final boolean enableFrontCamera = true;
+   final boolean enableFrontCamera = true;
    final boolean showFrontCameraStream = true;
    final boolean showOnFTCDashboard = false;
 
