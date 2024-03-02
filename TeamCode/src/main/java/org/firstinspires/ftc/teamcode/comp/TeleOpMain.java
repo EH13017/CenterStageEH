@@ -145,7 +145,7 @@ public class TeleOpMain extends OpMode {
 
 
       // Initialize REV Blinkin
-      blinkinLedDriver = hardwareMap.get(RevBlinkinLedDriver.class, "Light");
+      //blinkinLedDriver = hardwareMap.get(RevBlinkinLedDriver.class, "Light");
 
 
       // Let the user know initialization is complete.
@@ -207,7 +207,7 @@ public class TeleOpMain extends OpMode {
       }
 
       //Shoot Drone
-      if (twoStart & twoStart) {
+      if (gamepad2.right_stick_button) {
          Drone.setPosition(90);
       }
 
