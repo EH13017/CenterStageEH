@@ -7,7 +7,6 @@ import org.opencv.core.MatOfPoint;
 import org.opencv.core.Point;
 import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
-import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvPipeline;
 
@@ -35,6 +34,7 @@ public class SpikeLocationDetectionPipeline extends OpenCvPipeline {
    // public double areaLowThreshold = 50;
    // public double areaHighThreshold = 200;
    public AtomicInteger spikeLocation = new AtomicInteger(0);
+   public int Location = 1;
    boolean enableTelemetry = true;
    boolean addDrawings = true;
 
@@ -56,7 +56,7 @@ public class SpikeLocationDetectionPipeline extends OpenCvPipeline {
     * space we want to use on the live field
     * tuner instead of hardcoding it
     */
-   public ColorSpace colorSpace = ColorSpace.YCrCb;
+   public ColorSpace colorSpace = ColorSpace.RGB;
 
    /*
     * A good practice when typing EOCV pipelines is
@@ -69,9 +69,9 @@ public class SpikeLocationDetectionPipeline extends OpenCvPipeline {
     * "Out of Memory" error.
     */
    private Mat region1_Mat = new Mat();
-   private Mat ycrcbMat       = new Mat();
-   private Mat redConeBinaryMat      = new Mat();
-   private Mat blueConeBinaryMat      = new Mat();
+   private Mat ycrcbMat = new Mat();
+   private Mat redConeBinaryMat = new Mat();
+   private Mat blueConeBinaryMat = new Mat();
    private Mat maskedInputMat = new Mat();
    private Mat mask2 = null;
 
@@ -88,10 +88,7 @@ public class SpikeLocationDetectionPipeline extends OpenCvPipeline {
        * so that we don't have to do a switch
        * statement in the processFrame method.
        */
-      RGB(Imgproc.COLOR_RGBA2RGB),
-      HSV(Imgproc.COLOR_RGB2HSV),
-      YCrCb(Imgproc.COLOR_RGB2YCrCb),
-      Lab(Imgproc.COLOR_RGB2Lab);
+      RGB(Imgproc.COLOR_RGBA2RGB);
 
       //store cvtCode in a public var
       public int cvtCode = 0;
@@ -114,7 +111,7 @@ public class SpikeLocationDetectionPipeline extends OpenCvPipeline {
    double maxRectY = 0;
    double maxRectangleCenter = 0;
 
-   @Override
+  /* @Override
    public Mat processFrame(Mat input) {
       Imgproc.cvtColor(input, ycrcbMat, colorSpace.cvtCode);
 
@@ -173,9 +170,9 @@ public class SpikeLocationDetectionPipeline extends OpenCvPipeline {
 
          }
       }
-      /**
+      *//**
        * Add some nice and informative telemetry messages
-       */
+       *//*
       telemetry.addData("[>]", "Change these values in tuner menu");
       telemetry.addData("[Color Space]", colorSpace.name());
       telemetry.addData("numRedCones", numRedCones);
@@ -186,8 +183,146 @@ public class SpikeLocationDetectionPipeline extends OpenCvPipeline {
       telemetry.update();
 
       return input;
-   }
+   }*/
 
+
+   //These are my values (I don't know if they should be here)
+   private Mat binaryMat = new Mat();
+
+   public int color = 0;
+
+   Scalar lower;
+   Scalar upper;
+
+   public int x = 100;
+   public int x2 = 200;
+
+
+
+   @Override
+   public Mat processFrame(Mat frame) {
+
+      if(color == 0) {
+         lower = new Scalar(0, 0, 75);
+         upper = new Scalar(47, 150, 255);
+      }
+      else if(color == 1){
+         lower = new Scalar(100, 0, 0);
+         upper = new Scalar(255, 50, 50);
+      }
+      else {
+         lower = new Scalar(0, 0, 0);
+         upper = new Scalar(255, 255, 255);
+      }
+
+      /*
+       * Converts our input mat from RGB to
+       * specified color space by the enum.
+       * EOCV ALWAYS returns RGB mats, so you'd
+       * always convert from RGB to the color
+       * space you want to use.
+       *
+       * Takes our "input" mat as an input, and outputs
+       * to a separate Mat buffer "ycrcbMat"
+       */
+      Imgproc.cvtColor(frame, ycrcbMat, colorSpace.cvtCode);
+
+      /*
+       * This is where our thresholding actually happens.
+       * Takes our "ycrcbMat" as input and outputs a "binary"
+       * Mat to "binaryMat" of the same size as our input.
+       * "Discards" all the pixels outside the bounds specified
+       * by the scalars above (and modifiable with EOCV-Sim's
+       * live variable tuner.)
+       *
+       * Binary meaning that we have either a 0 or 255 value
+       * for every pixel.
+       *
+       * 0 represents our pixels that were outside the bounds
+       * 255 represents our pixels that are inside the bounds
+       */
+
+
+      Core.inRange(ycrcbMat, lower, upper, binaryMat);
+
+      /*
+       * Release the reusable Mat so that old data doesn't
+       * affect the next step in the current processing
+       */
+      maskedInputMat.release();
+
+      /*
+       * Now, with our binary Mat, we perform a "bitwise and"
+       * to our input image, meaning that we will perform a mask
+       * which will include the pixels from our input Mat which
+       * are "255" in our binary Mat (meaning that they're inside
+       * the range) and will discard any other pixel outside the
+       * range (RGB 0, 0, 0. All discarded pixels will be black)
+       */
+
+      Core.bitwise_and(frame, frame, maskedInputMat, binaryMat);
+
+      /**
+       * Add some nice and informative telemetry messages
+       */
+
+      /*
+       * Different from OpenCvPipeline, you cannot return
+       * a Mat from processFrame. Therefore, we will take
+       * advantage of the fact that anything drawn onto the
+       * passed `frame` object will be displayed on the
+       * viewport. We will just return null here.
+       */
+      maskedInputMat.copyTo(frame);
+
+      Point p1 = new Point(0, 0);
+      Point p2 = new Point(x, frame.height());
+      Point p3 = new Point(x, 0);
+      Point p4 = new Point(x2, frame.height());
+      Point p5 = new Point(x2, 0);
+      Point p6 = new Point(frame.width(), frame.height());
+
+      Scalar col = new Scalar(0, 255, 0);
+
+      Imgproc.rectangle(frame, p1, p2, col);
+      Imgproc.rectangle(frame, p3, p4, col);
+      Imgproc.rectangle(frame, p5, p6, col);
+
+
+      Mat r1 = frame.submat(new Rect(p1, p2));
+      Mat r2 = frame.submat(new Rect(p3, p4));
+      Mat r3 = frame.submat(new Rect(p5, p6));
+
+      double r1i = Core.sumElems(r1).val[0];
+      double r2i = Core.sumElems(r2).val[0];
+      double r3i = Core.sumElems(r3).val[0];
+
+      int high = 1;
+      if (r1i < r2i) {
+         high = 2;
+      }
+      if (r2i < r3i) {
+         high = 3;
+      }
+      if (r3i < r1i) {
+         high = 1;
+      }
+
+      // Change high data type to atomicinteger
+      spikeLocation = new AtomicInteger(high);
+
+      telemetry.addData("Highest", high);
+      telemetry.addData("r1", r1i);
+      telemetry.addData("r2", r2i);
+      telemetry.addData("r3", r3i);
+      telemetry.addData("[>]", "Change these values in tuner menu");
+      telemetry.addData("[Color Space]", colorSpace.name());
+      telemetry.addData("[Lower Scalar]", lower);
+      telemetry.addData("[Upper Scalar]", upper);
+      telemetry.update();
+
+      return frame;
+   }
    void SettingSpikeLocation(List<MatOfPoint> theContours){
       List<Rect> theRectangles = new ArrayList<>();
       maxRectangleWidth = 0;
