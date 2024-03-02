@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.TouchSensor;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.Adam.RevBlinkinLedDriver;
@@ -49,6 +50,8 @@ public class TeleOpMain extends OpMode {
 
    Servo Claw1;
    Servo Claw2;
+   TouchSensor Mlimit;
+
 
    boolean ClawButtonLeft;
    boolean clawToggle1 = false;
@@ -109,6 +112,8 @@ public class TeleOpMain extends OpMode {
       Claw2.setDirection(Servo.Direction.REVERSE);
       Drone = hardwareMap.servo.get("Drone");
       Drone.setPosition(0);
+      Mlimit = hardwareMap.touchSensor.get("Mlimit");
+
 
       WheelFrontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
       WheelFrontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -151,6 +156,13 @@ public class TeleOpMain extends OpMode {
 
    boolean firstTimeLeft = true;
    boolean firstTimeRight = true;
+   boolean FirstTime = true;
+
+   boolean FirstTime2 = true;
+   boolean IsSlideMoving = false;
+   int Slide1Zero = 0;
+   int Slide2Zero = 0;
+
 
    @Override
    public void loop() {
@@ -216,15 +228,53 @@ public class TeleOpMain extends OpMode {
          isclimbing = false;
       }
 
+      if (Mlimit.isPressed()) {
+         telemetry.addData("Slide1 mlimit is true", Slide1.getCurrentPosition());
+         telemetry.addData("Slide2 mlimit is true", Slide2.getCurrentPosition());
+      }
+
+      if (Mlimit.isPressed() && FirstTime) {
+         FirstTime = false;
+         Slide1Zero = Slide1.getCurrentPosition();
+         Slide2Zero = Slide2.getCurrentPosition();
+      }
+
+      if (gamepad2.x){
+         FirstTime2 = true;
+         telemetry.addData("X button pressed?", gamepad2.x);
+      } else {
+         telemetry.addData("X button pressed?", gamepad2.x);
+      }
+
+      if (FirstTime2) {
+         FirstTime2 = false;
+         Slide1.setPower(-0.4);
+         Slide2.setPower(-0.4);
+         IsSlideMoving = true;
+         telemetry.update();
+      } else{
+         telemetry.addLine("At zero position");
+      }
+
+      if (IsSlideMoving) {
+         if (Slide1.getCurrentPosition() <= Slide1Zero) {
+
+            FirstTime2 = false;
+            IsSlideMoving = false;
+            Slide1.setPower(0);
+            Slide2.setPower(0);
+         }
+      }
       // Moving Arm up and down
-      if (twoPadUp) {
-         slidesUp(armPower);
-      }
-      else if (twoPadDown) {
-         slidesDown(armPower);
-      }
-      else {
-         slidesStop();
+      if (IsSlideMoving == false || gamepad2.dpad_up || gamepad2.dpad_down) {
+         IsSlideMoving = false;
+         if (twoPadUp) {
+            slidesUp(armPower);
+         } else if (twoPadDown) {
+            slidesDown(armPower);
+         } else {
+            slidesStop();
+         }
       }
 
       //Claw

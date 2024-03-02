@@ -149,6 +149,8 @@ public class EncoderTesting extends OpMode {
    boolean IsSlideMoving = false;
    int Slide1Zero = 0;
    int Slide2Zero = 0;
+   boolean CrotateToPoint = false;
+   boolean CrotateMoving = false;
 
    @Override
    public void loop() {
@@ -258,7 +260,7 @@ public class EncoderTesting extends OpMode {
          firstTimeLeft = true;
       }
 
-      if (ClawButtonLeft && firstTimeLeft){
+      if (ClawButtonLeft && firstTimeLeft || gamepad2.y){
          firstTimeLeft = false;
          clawToggle1 = !clawToggle1;
          if (clawToggle1){
@@ -275,7 +277,7 @@ public class EncoderTesting extends OpMode {
          firstTimeRight = true;
       }
 
-      if (ClawButtonRight && firstTimeRight){
+      if (ClawButtonRight && firstTimeRight || gamepad2.y){
          firstTimeRight = false;
          clawToggle2 = !clawToggle2;
          if (clawToggle2){
@@ -298,6 +300,8 @@ public class EncoderTesting extends OpMode {
       telemetry.update();
 
       //CLAW ROTATOR
+      if (CrotateMoving == false || twoBumperLeft || twoBumperRight) {
+         CrotateMoving = false;
          if (twoBumperLeft) {
             Crotate.setPosition(-1);
          } else if (twoBumperRight) {
@@ -305,13 +309,17 @@ public class EncoderTesting extends OpMode {
          } else {
             Crotate.setPosition(0.5);
          }
+      }
 
       if (gamepad2.a) {
+         CrotateMoving = true;
          Crotate.setPosition(1);
       }
       if (gamepad2.b) {
-         Crotate.setPosition(0.2);
+         CrotateMoving = true;
+         Crotate.setPosition(-1);
       }
+
 
 
    }
