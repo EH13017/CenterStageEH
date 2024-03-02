@@ -1,19 +1,17 @@
 package org.firstinspires.ftc.teamcode.Adam;
 
 import android.graphics.Canvas;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.robotcore.internal.camera.calibration.CameraCalibration;
-import org.firstinspires.ftc.vision.VisionProcessor;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.Point;
+import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
-import org.opencv.core.Rect;
 import org.openftc.easyopencv.OpenCvPipeline;
 
-public class Cube_detection extends OpenCvPipeline {
+public class CubeDetectionPipeline extends OpenCvPipeline {
 
     /*
      * These are our variables that will be
@@ -60,11 +58,6 @@ public class Cube_detection extends OpenCvPipeline {
 
     private Telemetry telemetry = null;
 
-    @Override
-    public Mat processFrame(Mat input) {
-        return null;
-    }
-
     /**
      * Enum to choose which color space to choose
      * with the live variable tuner isntead of
@@ -90,16 +83,10 @@ public class Cube_detection extends OpenCvPipeline {
         }
     }
 
-    public Cube_detection(Telemetry telemetry) {
-        this.telemetry = telemetry;
-    }
-/*
-    @Override
-    public void init(int width, int height, CameraCalibration calibration) {
-    }
+   public int CubeLocation = 0;
 
     @Override
-    public Object processFrame(Mat frame, long captureTimeNanos) {
+    public Mat processFrame(Mat frame) {
 
         if(color == 0) {
             lower = new Scalar(0, 0, 75);
@@ -110,7 +97,7 @@ public class Cube_detection extends OpenCvPipeline {
             upper = new Scalar(255, 150, 48);
         }
 
-        *//*
+        /*
          * Converts our input mat from RGB to
          * specified color space by the enum.
          * EOCV ALWAYS returns RGB mats, so you'd
@@ -119,10 +106,10 @@ public class Cube_detection extends OpenCvPipeline {
          *
          * Takes our "input" mat as an input, and outputs
          * to a separate Mat buffer "ycrcbMat"
-         *//*
+         */
         Imgproc.cvtColor(frame, ycrcbMat, colorSpace.cvtCode);
 
-        *//*
+        /*
          * This is where our thresholding actually happens.
          * Takes our "ycrcbMat" as input and outputs a "binary"
          * Mat to "binaryMat" of the same size as our input.
@@ -135,39 +122,39 @@ public class Cube_detection extends OpenCvPipeline {
          *
          * 0 represents our pixels that were outside the bounds
          * 255 represents our pixels that are inside the bounds
-         *//*
+         */
 
 
         Core.inRange(ycrcbMat, lower, upper, binaryMat);
 
-        *//*
+        /*
          * Release the reusable Mat so that old data doesn't
          * affect the next step in the current processing
-         *//*
+         */
         maskedInputMat.release();
 
-        *//*
+        /*
          * Now, with our binary Mat, we perform a "bitwise and"
          * to our input image, meaning that we will perform a mask
          * which will include the pixels from our input Mat which
          * are "255" in our binary Mat (meaning that they're inside
          * the range) and will discard any other pixel outside the
          * range (RGB 0, 0, 0. All discarded pixels will be black)
-         *//*
+         */
 
         Core.bitwise_and(frame, frame, maskedInputMat, binaryMat);
 
-        *//**
+        /**
          * Add some nice and informative telemetry messages
-         *//*
+         */
 
-        *//*
+        /*
          * Different from OpenCvPipeline, you cannot return
          * a Mat from processFrame. Therefore, we will take
          * advantage of the fact that anything drawn onto the
          * passed `frame` object will be displayed on the
          * viewport. We will just return null here.
-         *//*
+         */
         maskedInputMat.copyTo(frame);
 
         Point p1 = new Point(0, 0);
@@ -192,16 +179,18 @@ public class Cube_detection extends OpenCvPipeline {
         double r2i = Core.sumElems(r2).val[0];
         double r3i = Core.sumElems(r3).val[0];
 
-        String high = "r1";
+        int high = 1;
         if (r1i < r2i) {
-            high = "r2";
+            high = 2;
         }
         if (r2i < r3i) {
-            high = "r3";
+            high = 3;
         }
         if (r3i < r1i) {
-            high = "r1";
+            high = 1;
         }
+
+        CubeLocation = high;
 
         telemetry.addData("Highest", high);
         telemetry.addData("r1", r1i);
@@ -213,8 +202,8 @@ public class Cube_detection extends OpenCvPipeline {
         telemetry.addData("[Upper Scalar]", upper);
         telemetry.update();
 
-        return null;
-    }*/
+        return frame;
+    }
 
     public String getHighValue(Mat frame) {
         if (color == 0) {
@@ -248,25 +237,29 @@ public class Cube_detection extends OpenCvPipeline {
         Mat r2 = frame.submat(new Rect(p3, p4));
         Mat r3 = frame.submat(new Rect(p5, p6));
 
-        if (!r1.empty() && !r2.empty() && !r3.empty()) {
-            double r1i = Core.sumElems(r1).val[0];
-            double r2i = Core.sumElems(r2).val[0];
-            double r3i = Core.sumElems(r3).val[0];
+        double r1i = Core.sumElems(r1).val[0];
+        double r2i = Core.sumElems(r2).val[0];
+        double r3i = Core.sumElems(r3).val[0];
 
-            String high = "r1";
-            if (r1i < r2i) {
-                high = "r2";
-            }
-            if (r2i < r3i) {
-                high = "r3";
-            }
-            if (r3i < r1i) {
-                high = "r1";
-            }
-
-            return high;
+        String high = "r1";
+        if (r1i < r2i) {
+            high = "r2";
         }
-        return null;
+        if (r2i < r3i) {
+            high = "r3";
+        }
+        if (r3i < r1i) {
+            high = "r1";
+        }
+
+        return high;
     }
 
+    @Override
+    public void onDrawFrame(Canvas canvas, int onscreenWidth, int onscreenHeight, float scaleBmpPxToCanvasPx, float scaleCanvasDensity, Object userContext) {
+    }
+/*
+    public CubeDetectionPipeline(Telemetry telemetry) {
+        this.telemetry = telemetry;
+    }*/
 }
