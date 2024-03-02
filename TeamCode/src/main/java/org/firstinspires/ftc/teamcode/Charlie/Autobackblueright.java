@@ -1,13 +1,14 @@
-package org.firstinspires.ftc.teamcode.Coach;
+package org.firstinspires.ftc.teamcode.Charlie;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+import org.firstinspires.ftc.teamcode.Coach.DriveWithEncoders;
 import org.firstinspires.ftc.teamcode.Interface.IDrive;
 
-@Autonomous(name = "Coach: AutoBlue001", group = "Coach")
-public class AutoBlue001 extends LinearOpMode {
+@Autonomous(name = "Charlie: Autobackblueright", group = "Charlie")
+public class Autobackblueright extends LinearOpMode {
 
     private IDrive _Drive;
 
@@ -30,10 +31,10 @@ public class AutoBlue001 extends LinearOpMode {
             _Drive.Left(90, .3);
 
             // Reverse intake to push out pixels
-            _Drive.Intake(IDrive.Direction.BACKWARD, 4000, .35);
+            _Drive.Intake(IDrive.Direction.BACKWARD, 4000, .5);
 
             // Drive Forward for 60 inches or until 10cm from something
-//            _Drive.Straight(IDrive.Direction.FORWARD, 60, .5, 10);
+            _Drive.Straight(IDrive.Direction.FORWARD, 60, .5, 10);
 
             // break will exit the loop for us
             break;
