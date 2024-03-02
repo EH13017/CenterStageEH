@@ -313,7 +313,7 @@ public class EncoderTesting extends OpMode {
 
       if (gamepad2.a) {
          CrotateMoving = true;
-         Crotate.setPosition(1);
+         Crotate.setPosition(.25);
       }
       if (gamepad2.b) {
          CrotateMoving = true;

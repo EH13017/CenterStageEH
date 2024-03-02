@@ -239,11 +239,8 @@ public class TeleOpMain extends OpMode {
          Slide2Zero = Slide2.getCurrentPosition();
       }
 
-      if (gamepad2.x){
+      if (gamepad2.left_stick_button){
          FirstTime2 = true;
-         telemetry.addData("X button pressed?", gamepad2.x);
-      } else {
-         telemetry.addData("X button pressed?", gamepad2.x);
       }
 
       if (FirstTime2) {
