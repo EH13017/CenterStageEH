@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.teamcode.Adam.RevBlinkinLedDriver;
+//import org.firstinspires.ftc.teamcode.Adam.RevBlinkinLedDriver;
 
 import java.util.concurrent.TimeUnit;
 
@@ -76,7 +76,7 @@ public class TeleOpMain extends OpMode {
    private Servo Crotate;
 
    //REV Blinkin
-   RevBlinkinLedDriver blinkinLedDriver;
+   //RevBlinkinLedDriver blinkinLedDriver;
 
 
 
@@ -129,10 +129,10 @@ public class TeleOpMain extends OpMode {
       Climber.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
       Intake.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-      WheelFrontLeft.setDirection(DcMotorSimple.Direction.FORWARD);
-      WheelFrontRight.setDirection(DcMotorSimple.Direction.REVERSE);
-      WheelBackLeft.setDirection(DcMotorSimple.Direction.FORWARD);
-      WheelBackRight.setDirection(DcMotorSimple.Direction.REVERSE);
+      WheelFrontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+      WheelFrontRight.setDirection(DcMotorSimple.Direction.FORWARD);
+      WheelBackLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+      WheelBackRight.setDirection(DcMotorSimple.Direction.FORWARD);
       Climber.setDirection(DcMotorSimple.Direction.FORWARD);
       Intake.setDirection(DcMotorSimple.Direction.REVERSE);
 
@@ -203,7 +203,7 @@ public class TeleOpMain extends OpMode {
       long runtime = (long) getRuntime();
       telemetry.addData("Runtime", runtime);
       if (runtime >= TimeUnit.MINUTES.toSeconds(1)+30) {
-         blinkinLedDriver.setPWM(0.6525);
+         //blinkinLedDriver.setPWM(0.6525);
       }
 
       //Shoot Drone
