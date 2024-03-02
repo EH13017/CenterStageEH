@@ -6,7 +6,6 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 
@@ -25,7 +24,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 @Autonomous(name = "AutoRed", group = "competition")
 @Config
-@Disabled
 public class AutoRed extends LinearOpMode {
 
     private IDrive _Drive;
